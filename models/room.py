@@ -11,6 +11,7 @@ class Room(object):
     def __init__(self, room_name):
         self.name = room_name
 
+
 class Office(Room):
     """
     Office
@@ -20,6 +21,7 @@ class Office(Room):
 
     def __init__(self, room_name):
         self.room_type = "OFFICE"
+
 
 class LivingSpace(Room):
     """
