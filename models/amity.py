@@ -8,28 +8,27 @@ class Amity(object):
     Class Amity
     """
     rooms = []
-    vacant_rooms = []
     offices = []
-    vacant_offices = []
     livingspaces = []
     people = []
-    allocated_people = []
-    unallocated_people = []
-    vacant_livingspaces = []
     staff = []
-    unallocated_staff = []
     fellows = []
+    office_allocations = {}
+    livingspace_allocations = {}
+    vacant_offices = []
+    vacant_livingspaces = []
+    unallocated_staff = []
     unallocated_fellows = []
 
     def create_room(self, room_name, room_type):
         """
-        create_room function
+        create_room method
         """
         pass
 
     def add_person(self, person_name, job_description, wants_accommodation):
         """
-        Add person Function
+        Add person method
         """
         pass
 
@@ -45,39 +44,39 @@ class Amity(object):
         """
         pass
 
-    def reallocate_person(self, person_name, new_room_name):
+    def reallocate_person(self, person_id, room_name):
         """
-        re-locate person Function
+        re-locate person method
         """
         pass
 
     def load_people(self, filename):
         """
-        load_people Function
+        load_people method
         """
         pass
 
     def load_rooms(self, filename):
         """
-        load_rooms Function
+        load_rooms method
         """
         pass
 
     def print_allocations(self, filename):
         """
-        print_allocations Function
+        print_allocations method
         """
         pass
 
     def print_unallocated(self, filename):
         """
-        print_unallocated function
+        print_unallocated method
         """
         pass
 
     def print_room(self):
         """
-        print_room Function
+        print_room method
         """
         pass
 
