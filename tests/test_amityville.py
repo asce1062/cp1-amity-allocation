@@ -17,10 +17,10 @@ class TestAmityville(unittest.TestCase):
         """
         test create room Function
         """
-        all_rooms = len(self.test_amityville.rooms)
+        rooms = len(self.test_amityville.rooms)
         self.test_amityville.create_room("Tsavo", "OFFICE")
-        final_all_rooms = len(self.test_amityville.rooms)
-        self.assertEqual(final_all_rooms, all_rooms + 1)
+        final_rooms = len(self.test_amityville.rooms)
+        self.assertEqual(final_rooms, rooms + 1)
 
     def test_create_livingspace(self):
         """
@@ -45,24 +45,24 @@ class TestAmityville(unittest.TestCase):
         test if a room being created already exist
         """
         self.test_amityville.create_room("NARNIA", "OFFICE")
-        created_room = self.test_amityville.create_room("NARNIA", "OFFICE")
-        self.assertEqual(created_room, "NARNIA already exists")
+        response = self.test_amityville.create_room("NARNIA", "OFFICE")
+        self.assertEqual(response, "NARNIA already exists")
 
     def test_invalid_room_type(self):
         """
         Test if an invalid room type
         """
-        created_room = self.test_amityville.create_room("NARNIA", "OFICE")
-        self.assertEqual(created_room, "Invalid room type.")
+        response = self.test_amityville.create_room("NARNIA", "OFICE")
+        self.assertEqual(response, "Invalid room type.")
 
     def test_add_person(self):
         """
         test add person Function
         """
-        all_people = len(self.test_amityville.people)
+        people = len(self.test_amityville.people)
         self.test_amityville.add_person("ALEX", "FELLOW", "NO")
-        final_all_people = len(self.test_amityville.people)
-        self.assertEqual(final_all_people, all_people + 1)
+        final_people = len(self.test_amityville.people)
+        self.assertEqual(final_people, people + 1)
 
     def test_add_staff(self):
         """
@@ -86,20 +86,20 @@ class TestAmityville(unittest.TestCase):
         """
         test if invalid person name()
         """
-        all_people = self.test_amityville.add_person("asce1062", "FELLOW", "NO")
-        self.assertEqual(all_people, "Invalid person name")
+        response = self.test_amityville.add_person(
+            "asce1062", "FELLOW", "NO")
+        self.assertEqual(response, "Invalid person name")
 
     def test_invalid_job_description(self):
         """
         test if invalid job description
         """
-        all_people = self.test_amityville.add_person("ALEX", "FELOW", "NO")
-        self.assertEqual(all_people, "Invalid job description")
+        response = self.test_amityville.add_person("ALEX", "FELOW", "NO")
+        self.assertEqual(response, "Invalid job description")
 
     def test_staff_wants_accommodation(self):
         """
         test if a staff request for accommodation
         """
-        all_people = self.test_amityville.add_person("TONI", "STAFF", "YES")
-        self.assertEqual(all_people, "Staff cannot be allocate living spaces")
-
+        response = self.test_amityville.add_person("TONI", "STAFF", "YES")
+        self.assertEqual(response, "Staff cannot be allocated living spaces")
