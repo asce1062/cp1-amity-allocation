@@ -48,6 +48,13 @@ class TestAmityville(unittest.TestCase):
         created_room = self.test_amityville.create_room("NARNIA", "OFFICE")
         self.assertEqual(created_room, "NARNIA already exists")
 
+    def test_invalid_room_type(self):
+        """
+        Test if an invalid room type
+        """
+        created_room = self.test_amityville.create_room("NARNIA", "OFICE")
+        self.assertEqual(created_room, "Invalid room type.")
+
     def test_add_person(self):
         """
         test add person Function
@@ -74,3 +81,25 @@ class TestAmityville(unittest.TestCase):
         self.test_amityville.add_person("ALEX", "STAFF", "NO")
         final_fellows = len(self.test_amityville.people)
         self.assertEqual(final_fellows, fellows + 1)
+
+    def test_invalid_person_name(self):
+        """
+        test if invalid person name()
+        """
+        all_people = self.test_amityville.add_person("asce1062", "FELLOW", "NO")
+        self.assertEqual(all_people, "Invalid person name")
+
+    def test_invalid_job_description(self):
+        """
+        test if invalid job description
+        """
+        all_people = self.test_amityville.add_person("ALEX", "FELOW", "NO")
+        self.assertEqual(all_people, "Invalid job description")
+
+    def test_staff_wants_accommodation(self):
+        """
+        test if a staff request for accommodation
+        """
+        all_people = self.test_amityville.add_person("TONI", "STAFF", "YES")
+        self.assertEqual(all_people, "Staff cannot be allocate living spaces")
+

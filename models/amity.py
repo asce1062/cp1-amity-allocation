@@ -33,6 +33,18 @@ class Amity(object):
         """
         pass
 
+    def allocate_livingspace(self, fellow_name):
+        """
+        allocate a livingspace to a fellow
+        """
+        pass
+
+    def allocate_office(self, staff_name):
+        """
+        allocate office to staff
+        """
+        pass
+
     def reallocate_person(self, person_name, new_room_name):
         """
         re-locate person Function
@@ -42,6 +54,12 @@ class Amity(object):
     def load_people(self, filename):
         """
         load_people Function
+        """
+        pass
+
+    def load_rooms(self, filename):
+        """
+        load_rooms Function
         """
         pass
 
@@ -60,5 +78,23 @@ class Amity(object):
     def print_room(self):
         """
         print_room Function
+        """
+        pass
+
+    def print_fellows(self):
+        """
+        print all fellows
+        """
+        pass
+
+    def print_staf(self):
+        """
+        print all staff
+        """
+        pass
+
+    def print_all_people(self):
+        """
+        print all people
         """
         pass
