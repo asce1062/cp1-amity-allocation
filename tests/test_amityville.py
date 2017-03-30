@@ -17,32 +17,32 @@ class TestAmityville(unittest.TestCase):
         """
         test if a room is created
         """
-        rooms = len(self.amityville.rooms)
+        initial_room_count = len(self.amityville.rooms)
         self.amityville.create_room("Tsavo", "OFFICE")
-        final_rooms = len(self.amityville.rooms)
-        self.assertEqual(final_rooms, rooms + 1)
+        final_room_count = len(self.amityville.rooms)
+        self.assertEqual(final_room_count, initial_room_count + 1)
 
     def test_create_livingspace(self):
         """
-        test if a living space is created
+
         """
-        living_spaces = len(self.amityville.livingspaces)
+        initial_livingspace_count = len(self.amityville.livingspaces)
         self.amityville.create_room("MOON", "LIVINGSPACE")
-        final_living_spaces = len(self.amityville.livingspaces)
-        self.assertEqual(final_living_spaces, living_spaces + 1)
+        final_livingspace_count = len(self.amityville.livingspaces)
+        self.assertEqual(final_livingspace_count, initial_livingspace_count + 1)
 
     def test_create_office(self):
         """
         test if an office is created
         """
-        offices = len(self.amityville.offices)
+        initial_office_count = len(self.amityville.offices)
         self.amityville.create_room("SUN", "OFFICE")
-        final_offices = len(self.amityville.rooms)
-        self.assertEqual(final_offices, offices + 1)
+        final_office_count = len(self.amityville.rooms)
+        self.assertEqual(final_office_count, initial_office_count + 1)
 
     def test_room_already_exists(self):
         """
-        test if a room being created already exist
+        test if a room being created already exists
         """
         self.amityville.create_room("NARNIA", "OFFICE")
         result = self.amityville.create_room("NARNIA", "OFFICE")
@@ -50,37 +50,37 @@ class TestAmityville(unittest.TestCase):
 
     def test_invalid_room_type(self):
         """
-        Test if an invalid room type
+        Test for an invalid room type
         """
         result = self.amityville.create_room("NARNIA", "OFICE")
         self.assertEqual(result, "Invalid room type.")
 
     def test_add_person(self):
         """
-        test is a person is added
+        test if a person is added
         """
-        people = len(self.amityville.people)
+        initial_people_count = len(self.amityville.people)
         self.amityville.add_person("ALEX", "FELLOW", "NO")
-        final_people = len(self.amityville.people)
-        self.assertEqual(final_people, people + 1)
+        final_people_count = len(self.amityville.people)
+        self.assertEqual(final_people_count, initial_people_count + 1)
 
     def test_add_staff(self):
         """
         test if a staff member is added
         """
-        staff = len(self.amityville.staff)
+        initial_staff_count = len(self.amityville.staff)
         self.amityville.add_person("ALEX", "STAFF", "NO")
-        final_staff = len(self.amityville.people)
-        self.assertEqual(final_staff, staff + 1)
+        final_staff_count = len(self.amityville.people)
+        self.assertEqual(final_staff_count, initial_staff_count + 1)
 
     def test_add_fellow(self):
         """
         test if a fellow is added
         """
-        fellows = len(self.amityville.fellows)
+        initial_fellows_count = len(self.amityville.fellows)
         self.amityville.add_person("ALEX", "FELLOW", "NO")
-        final_fellows = len(self.amityville.people)
-        self.assertEqual(final_fellows, fellows + 1)
+        final_fellows_count = len(self.amityville.people)
+        self.assertEqual(final_fellows_count, initial_fellows_count + 1)
 
     def test_invalid_person_name(self):
         """
