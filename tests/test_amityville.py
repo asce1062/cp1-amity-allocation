@@ -17,8 +17,22 @@ class TestAmityville(unittest.TestCase):
         """
         test if a room is created
         """
+        self.amityville.rooms = []
+        self.amityville.offices = []
+        self.amityville.livingspaces = []
+        self.amityville.people = []
+        self.amityville.staff = []
+        self.amityville.fellows = []
+        self.amityville.office_allocations = {}
+        self.amityville.livingspace_allocations = {}
+        self.amityville.vacant_offices = []
+        self.amityville.vacant_livingspaces = []
+        self.amityville.unallocated_staff = []
+        self.amityville.unallocated_fellows = []
+        self.amityville.room_data = {}
+
         initial_room_count = len(self.amityville.rooms)
-        self.amityville.create_room("Tsavo", "OFFICE")
+        self.amityville.create_room("MOON", "LIVINGSPACE")
         final_room_count = len(self.amityville.rooms)
         self.assertEqual(final_room_count, initial_room_count + 1)
 
@@ -26,6 +40,21 @@ class TestAmityville(unittest.TestCase):
         """
         test if a livingspace is created
         """
+
+        self.amityville.rooms = []
+        self.amityville.offices = []
+        self.amityville.livingspaces = []
+        self.amityville.people = []
+        self.amityville.staff = []
+        self.amityville.fellows = []
+        self.amityville.office_allocations = {}
+        self.amityville.livingspace_allocations = {}
+        self.amityville.vacant_offices = []
+        self.amityville.vacant_livingspaces = []
+        self.amityville.unallocated_staff = []
+        self.amityville.unallocated_fellows = []
+        self.amityville.room_data = {}
+
         initial_livingspace_count = len(self.amityville.livingspaces)
         self.amityville.create_room("MOON", "LIVINGSPACE")
         final_livingspace_count = len(self.amityville.livingspaces)
@@ -36,6 +65,21 @@ class TestAmityville(unittest.TestCase):
         """
         test if an office is created
         """
+
+        self.amityville.rooms = []
+        self.amityville.offices = []
+        self.amityville.livingspaces = []
+        self.amityville.people = []
+        self.amityville.staff = []
+        self.amityville.fellows = []
+        self.amityville.office_allocations = {}
+        self.amityville.livingspace_allocations = {}
+        self.amityville.vacant_offices = []
+        self.amityville.vacant_livingspaces = []
+        self.amityville.unallocated_staff = []
+        self.amityville.unallocated_fellows = []
+        self.amityville.room_data = {}
+
         initial_office_count = len(self.amityville.offices)
         self.amityville.create_room("SUN", "OFFICE")
         final_office_count = len(self.amityville.rooms)
@@ -45,15 +89,15 @@ class TestAmityville(unittest.TestCase):
         """
         test if a room being created already exists
         """
-        self.amityville.create_room("NARNIA", "OFFICE")
-        result = self.amityville.create_room("NARNIA", "OFFICE")
-        self.assertEqual(result, "NARNIA already exists")
+        self.amityville.create_room("SUN", "OFFICE")
+        result = self.amityville.create_room("SUN", "OFFICE")
+        self.assertEqual(result, "SUN already exists.")
 
     def test_invalid_room_type(self):
         """
         Test for an invalid room type
         """
-        result = self.amityville.create_room("NARNIA", "OFICE")
+        result = self.amityville.create_room("SUN", "OFICE")
         self.assertEqual(result, "Invalid room type.")
 
     def test_add_person(self):
@@ -125,19 +169,6 @@ class TestAmityville(unittest.TestCase):
         """
         test if a fellow has already been allocated a livingspace
         """
-        self.amityville.rooms = []
-        self.amityville.offices = []
-        self.amityville.livingspaces = []
-        self.amityville.people = []
-        self.amityville.staff = []
-        self.amityville.fellows = []
-        self.amityville.office_allocations = {}
-        self.amityville.livingspace_allocations = {}
-        self.amityville.vacant_offices = []
-        self.amityville.vacant_livingspaces = []
-        self.amityville.unallocated_staff = []
-        self.amityville.unallocated_fellows = []
-
         self.amityville.create_room("MOON", "LIVINGSPACE")
         self.amityville.add_person("ALEX", "FELLOW", "YES")
         result = self.amityville.allocate_livingspace("ALEX")
@@ -147,19 +178,6 @@ class TestAmityville(unittest.TestCase):
         """
         test that there are no vaccant livingspaces
         """
-        self.amityville.rooms = []
-        self.amityville.offices = []
-        self.amityville.livingspaces = []
-        self.amityville.people = []
-        self.amityville.staff = []
-        self.amityville.fellows = []
-        self.amityville.office_allocations = {}
-        self.amityville.livingspace_allocations = {}
-        self.amityville.vacant_offices = []
-        self.amityville.vacant_livingspaces = []
-        self.amityville.unallocated_staff = []
-        self.amityville.unallocated_fellows = []
-
         self.amityville.add_person("ALEX", "FELLOW", "YES")
         self.amityville.add_person("JOE", "FELLOW", "YES")
         self.amityville.add_person("TINA", "FELLOW", "YES")
@@ -177,19 +195,6 @@ class TestAmityville(unittest.TestCase):
         """
         test if a staff has already been allocated an office
         """
-        self.amityville.rooms = []
-        self.amityville.offices = []
-        self.amityville.livingspaces = []
-        self.amityville.people = []
-        self.amityville.staff = []
-        self.amityville.fellows = []
-        self.amityville.office_allocations = {}
-        self.amityville.livingspace_allocations = {}
-        self.amityville.vacant_offices = []
-        self.amityville.vacant_livingspaces = []
-        self.amityville.unallocated_staff = []
-        self.amityville.unallocated_fellows = []
-
         self.amityville.create_room("SUN", "OFFICE")
         self.amityville.add_person("ALEX", "STAFF", "NO")
         result = self.amityville.allocate_office("ALEX")
@@ -199,19 +204,6 @@ class TestAmityville(unittest.TestCase):
         """
         test that there are no vaccant offices
         """
-        self.amityville.rooms = []
-        self.amityville.offices = []
-        self.amityville.livingspaces = []
-        self.amityville.people = []
-        self.amityville.staff = []
-        self.amityville.fellows = []
-        self.amityville.office_allocations = {}
-        self.amityville.livingspace_allocations = {}
-        self.amityville.vacant_offices = []
-        self.amityville.vacant_livingspaces = []
-        self.amityville.unallocated_staff = []
-        self.amityville.unallocated_fellows = []
-
         self.amityville.add_person("ALEX", "STAFF", "NO")
         self.amityville.add_person("JOE", "STAFF", "NO")
         self.amityville.add_person("TINA", "STAFF", "NO")
@@ -233,19 +225,6 @@ class TestAmityville(unittest.TestCase):
         """
         test is persons are reallocated
         """
-        self.amityville.rooms = []
-        self.amityville.offices = []
-        self.amityville.livingspaces = []
-        self.amityville.people = []
-        self.amityville.staff = []
-        self.amityville.fellows = []
-        self.amityville.office_allocations = {}
-        self.amityville.livingspace_allocations = {}
-        self.amityville.vacant_offices = []
-        self.amityville.vacant_livingspaces = []
-        self.amityville.unallocated_staff = []
-        self.amityville.unallocated_fellows = []
-
         self.amityville.create_room("SUN", "OFFICE")
         self.amityville.add_person("ALEX", "FELLOW", "NO")
         self.amityville.create_room("SHINE", "OFFICE")
@@ -256,19 +235,6 @@ class TestAmityville(unittest.TestCase):
         """
         test if a staff is reallocated to a living space
         """
-        self.amityville.rooms = []
-        self.amityville.offices = []
-        self.amityville.livingspaces = []
-        self.amityville.people = []
-        self.amityville.staff = []
-        self.amityville.fellows = []
-        self.amityville.office_allocations = {}
-        self.amityville.livingspace_allocations = {}
-        self.amityville.vacant_offices = []
-        self.amityville.vacant_livingspaces = []
-        self.amityville.unallocated_staff = []
-        self.amityville.unallocated_fellows = []
-
         self.amityville.create_room("MOON", "LIVINGSPACE")
         self.amityville.create_room("SUN", "OFFICE")
         self.amityville.add_person("ALEX", "STAFF", "NO")
@@ -280,19 +246,6 @@ class TestAmityville(unittest.TestCase):
         """
         test if room being reallocated to is full
         """
-        self.amityville.rooms = []
-        self.amityville.offices = []
-        self.amityville.livingspaces = []
-        self.amityville.people = []
-        self.amityville.staff = []
-        self.amityville.fellows = []
-        self.amityville.office_allocations = {}
-        self.amityville.livingspace_allocations = {}
-        self.amityville.vacant_offices = []
-        self.amityville.vacant_livingspaces = []
-        self.amityville.unallocated_staff = []
-        self.amityville.unallocated_fellows = []
-
         self.amityville.create_room("MOON", "LIVINGSPACE")
         self.amityville.add_person("ALEX", "FELLOW", "YES")
         self.amityville.add_person("JOE", "FELLOW", "YES")
@@ -307,19 +260,6 @@ class TestAmityville(unittest.TestCase):
         """
         test if the room being reallocated to is the one they are currently residing in
         """
-        self.amityville.rooms = []
-        self.amityville.offices = []
-        self.amityville.livingspaces = []
-        self.amityville.people = []
-        self.amityville.staff = []
-        self.amityville.fellows = []
-        self.amityville.office_allocations = {}
-        self.amityville.livingspace_allocations = {}
-        self.amityville.vacant_offices = []
-        self.amityville.vacant_livingspaces = []
-        self.amityville.unallocated_staff = []
-        self.amityville.unallocated_fellows = []
-
         self.amityville.create_room("MOON", "LIVINGSPACE")
         self.amityville.add_person("ALEX", "FELLOW", "YES")
         self.amityville.add_person("JOE", "FELLOW", "YES")
@@ -332,19 +272,6 @@ class TestAmityville(unittest.TestCase):
         """
         test if reallocating a person not yet allocated
         """
-        self.amityville.rooms = []
-        self.amityville.offices = []
-        self.amityville.livingspaces = []
-        self.amityville.people = []
-        self.amityville.staff = []
-        self.amityville.fellows = []
-        self.amityville.office_allocations = {}
-        self.amityville.livingspace_allocations = {}
-        self.amityville.vacant_offices = []
-        self.amityville.vacant_livingspaces = []
-        self.amityville.unallocated_staff = []
-        self.amityville.unallocated_fellows = []
-
         self.amityville.add_person("ALEX", "FELLOW", "YES")
         self.amityville.create_room("MOON", "LIVINGSPACE")
         self.amityville.add_person("JOE", "FELLOW", "YES")
