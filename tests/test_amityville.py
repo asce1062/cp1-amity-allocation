@@ -89,6 +89,20 @@ class TestAmityville(unittest.TestCase):
         """
         test if a room being created already exists
         """
+        self.amityville.rooms = []
+        self.amityville.offices = []
+        self.amityville.livingspaces = []
+        self.amityville.people = []
+        self.amityville.staff = []
+        self.amityville.fellows = []
+        self.amityville.office_allocations = {}
+        self.amityville.livingspace_allocations = {}
+        self.amityville.vacant_offices = []
+        self.amityville.vacant_livingspaces = []
+        self.amityville.unallocated_staff = []
+        self.amityville.unallocated_fellows = []
+        self.amityville.room_data = {}
+
         self.amityville.create_room("SUN", "OFFICE")
         result = self.amityville.create_room("SUN", "OFFICE")
         self.assertEqual(result, "SUN already exists.")
@@ -97,6 +111,21 @@ class TestAmityville(unittest.TestCase):
         """
         Test for an invalid room type
         """
+
+        self.amityville.rooms = []
+        self.amityville.offices = []
+        self.amityville.livingspaces = []
+        self.amityville.people = []
+        self.amityville.staff = []
+        self.amityville.fellows = []
+        self.amityville.office_allocations = {}
+        self.amityville.livingspace_allocations = {}
+        self.amityville.vacant_offices = []
+        self.amityville.vacant_livingspaces = []
+        self.amityville.unallocated_staff = []
+        self.amityville.unallocated_fellows = []
+        self.amityville.room_data = {}
+
         result = self.amityville.create_room("SUN", "OFICE")
         self.assertEqual(result, "Invalid room type.")
 
@@ -113,6 +142,21 @@ class TestAmityville(unittest.TestCase):
         """
         test if a staff member is added
         """
+        self.amityville.rooms = []
+        self.amityville.offices = []
+        self.amityville.livingspaces = []
+        self.amityville.people = []
+        self.amityville.staff = []
+        self.amityville.fellows = []
+        self.amityville.office_allocations = {}
+        self.amityville.livingspace_allocations = {}
+        self.amityville.vacant_offices = []
+        self.amityville.vacant_livingspaces = []
+        self.amityville.unallocated_staff = []
+        self.amityville.unallocated_fellows = []
+        self.amityville.room_data = {}
+        self.amityville.person_data = {}
+
         initial_staff_count = len(self.amityville.staff)
         self.amityville.add_person("ALEX", "STAFF", "NO")
         final_staff_count = len(self.amityville.people)
@@ -133,21 +177,21 @@ class TestAmityville(unittest.TestCase):
         """
         result = self.amityville.add_person(
             "asce1062", "FELLOW", "NO")
-        self.assertEqual(result, "Invalid person name")
+        self.assertEqual(result, "Invalid person name.")
 
     def test_invalid_job_description(self):
         """
         test if job description is valid
         """
         result = self.amityville.add_person("ALEX", "FELOW", "NO")
-        self.assertEqual(result, "Invalid job description")
+        self.assertEqual(result, "Invalid job description.")
 
     def test_staff_wants_accommodation(self):
         """
         test if a staff request for accommodation
         """
         result = self.amityville.add_person("ALEX", "STAFF", "YES")
-        self.assertEqual(result, "Staff cannot be allocated living spaces")
+        self.assertEqual(result, "Staff cannot be allocated a livingspace.")
 
     def test_allocate_livingspace(self):
         """
