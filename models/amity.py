@@ -1,9 +1,9 @@
 """
 Class Amity
 """
-from .room import LivingSpace, Office
-from .person import Fellow, Staff
-
+import random
+from models.room import LivingSpace, Office
+from models.person import Fellow, Staff
 
 class Amity(object):
     """
@@ -17,8 +17,6 @@ class Amity(object):
     fellows = []
     office_allocations = {}
     livingspace_allocations = {}
-    vacant_offices = []
-    vacant_livingspaces = []
     unallocated_staff = []
     unallocated_fellows = []
     room_data = {}
@@ -32,9 +30,9 @@ class Amity(object):
         room_type = room_type.upper()
 
         if room_name in self.rooms:
-            return '{} already exists.'.format(room_name)
-        else:
+            return '{} already exists.' .format(room_name)
 
+        else:
             if room_type == 'LIVINGSPACE':
                 new_room = LivingSpace(room_name)
                 self.rooms.append(room_name)
@@ -42,18 +40,18 @@ class Amity(object):
                 self.room_data[room_name] = [new_room.room_type,
                                              new_room.room_capacity]
                 self.livingspace_allocations[room_name] = []
-                return '{} created'.format(room_name)
-            elif room_type == 'OFFICE':
+                return '{} created.'.format(room_name)
 
+            elif room_type == 'OFFICE':
                 new_room = Office(room_name)
                 self.rooms.append(room_name)
                 self.offices.append(room_name)
                 self.room_data[room_name] = [new_room.room_type,
                                              new_room.room_capacity]
                 self.office_allocations[room_name] = []
-                return '{} created'.format(room_name)
-            else:
+                return '{} created.'.format(room_name)
 
+            else:
                 return 'Invalid room type.'
 
     def add_person(self, person_name, job_description, wants_accommodation='N'):
@@ -64,10 +62,9 @@ class Amity(object):
             return 'Invalid person name.'
 
         else:
-
             if job_description.upper() == 'FELLOW':
                 new_person = Fellow(person_name.upper())
-                person_id = 'F' + str(len(self.fellows) + 1)
+                person_id = 'F{}' .format(len(self.people) + 1)
                 self.fellows.append(person_name.upper())
                 self.people.append(person_name.upper())
 
@@ -96,7 +93,7 @@ class Amity(object):
 
             elif job_description.upper() == 'STAFF':
                 new_person = Staff(person_name.upper())
-                person_id = "S" + str(len(self.staff) + 1)
+                person_id = 'S{}' .format(len(self.people) + 1)
                 self.staff.append(person_name.upper())
                 self.people.append(person_name.upper())
 
@@ -122,19 +119,135 @@ class Amity(object):
         """
         allocate a livingspace to a fellow
         """
-        pass
+        vacant_livingspaces = []
 
-    def allocate_office(self, staff_name):
+        for room in self.livingspaces:
+
+            if len(self.livingspace_allocations[room]) < self.room_data[room][1]:
+                vacant_livingspaces.append(room)
+
+        if fellow_name not in self.people:
+            return '{} does not exist.' .format(fellow_name.upper())
+        else:
+
+            if vacant_livingspaces:
+                for room in self.livingspace_allocations:
+                    if fellow_name.upper() in self.livingspace_allocations[room]:
+                        return '{} already allocated a livingspace.' \
+                            .format(fellow_name.upper())
+
+                random_living_space = random.choice(vacant_livingspaces)
+
+                self.livingspace_allocations[random_living_space].append(
+                    fellow_name.upper())
+
+                if fellow_name in vacant_livingspaces:
+                    vacant_livingspaces.remove(fellow_name)
+
+                return '{} already allocated to {}.' \
+                    .format(fellow_name.upper(), random_living_space)
+
+            else:
+                vacant_livingspaces.append(fellow_name.upper())
+                return 'No vaccant livingspace.'
+
+    def allocate_office(self, person_name):
         """
         allocate office to staff
         """
-        pass
+        vacant_offices = []
+        for room in self.offices:
+
+            if len(self.office_allocations[room]) < self.room_data[room][1]:
+                vacant_offices.append(room)
+
+        if person_name not in self.people:
+            return '{} does not exist.' .format(person_name.upper())
+
+        else:
+
+            if vacant_offices:
+                for room in self.office_allocations:
+                    if person_name.upper() in self.office_allocations[room]:
+                        return '{} already allocated to an office.' .format(person_name.upper())
+
+                random_office = random.choice(vacant_offices)
+                self.office_allocations[random_office].append(
+                    person_name.upper())
+
+                if person_name in vacant_offices:
+                    vacant_offices.remove(person_name)
+                return '{} allocated to {}' .format(person_name.upper(), random_office)
+
+            else:
+                vacant_offices.append(person_name.upper())
+                return 'No vaccant office.'
 
     def reallocate_person(self, person_id, room_name):
         """
         re-locate person method
         """
-        pass
+        person_data_list = self.person_data.get(person_id.upper())
+        room_data_list = self.room_data.get(room_name.upper())
+
+        if person_data_list is None:
+            return '{} does not exist.' .format(person_id)
+
+        elif room_data_list is None:
+            return '{} does not exist.' .format(room_name)
+
+        else:
+            person_name = person_data_list[0].upper()
+            person_job_type = person_data_list[1]
+            room_capacity = room_data_list[1]
+            room_type = room_data_list[0]
+
+            if room_type == 'LIVINGSPACE':
+                current_number_of_room_occupants = len(
+                    self.livingspace_allocations[room_name])
+
+                if person_name in self.livingspace_allocations[room_name]:
+                    return "{} already allocated to {}." .format(person_name, room_name)
+
+                elif current_number_of_room_occupants == room_capacity:
+                    return '{} is already full.' .format(room_name)
+
+                elif person_job_type == 'STAFF':
+                    return 'Cannot reallocate staff member to a livingspace.'
+
+                else:
+                    for room in self.livingspace_allocations:
+                        for person in self.livingspace_allocations[room]:
+                            if person == person_name:
+                                self.livingspace_allocations[room].remove(
+                                    person_name)
+                                self.livingspace_allocations[room_name].append(
+                                    person_name)
+                                return '{} has been reallocated to {}.' \
+                                    .format(person_name, room_name.upper())
+                    return '{} is not allocated any livingspace.' .format(person_name)
+
+            if room_type == 'OFFICE':
+                current_number_of_room_occupants = len(
+                    self.office_allocations[room_name.upper()])
+
+                if person_name in self.office_allocations[room_name.upper()]:
+                    return '{} already allocated to {}' .format(person_name, room_name)
+
+                elif current_number_of_room_occupants == room_capacity:
+                    return '{} is already full.' .format(room_name)
+
+                else:
+                    for room in self.office_allocations:
+                        for person in self.office_allocations[room]:
+                            if person == person_name:
+                                self.office_allocations[room].remove(
+                                    person_name)
+                                self.office_allocations[room_name.upper()].append(
+                                    person_name)
+                                return '{} has been reallocated to {}.' \
+                                    .format(person_name, room_name.upper())
+                    return '{} not yet allocated to any office.' .format(person_name)
 
     def load_people(self, filename):
         """
@@ -172,7 +285,7 @@ class Amity(object):
         """
         pass
 
-    def print_staf(self):
+    def print_staff(self):
         """
         print all staff
         """
