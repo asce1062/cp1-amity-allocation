@@ -13,6 +13,19 @@ class TestAmityville(unittest.TestCase):
     def setUp(self):
         self.amityville = Amity()
 
+    def tearDown(self):
+        """
+        clear list data for each test.
+        """
+        del self.amityville.rooms [:]
+        del self.amityville.offices [:]
+        del self.amityville.livingspaces [:]
+        del self.amityville.people [:]
+        del self.amityville.staff [:]
+        del self.amityville.fellows [:]
+        del self.amityville.unallocated_staff [:]
+        del self.amityville.unallocated_fellows [:]
+
     def test_room_already_exists(self):
         """
         test if a room being created already exists
@@ -35,9 +48,6 @@ class TestAmityville(unittest.TestCase):
         """
         test if an office is created
         """
-        self.amityville.rooms = []
-        self.amityville.offices = []
-
         initial_office_count = len(self.amityville.offices)
         self.amityville.create_room("SUN", "OFFICE")
         final_office_count = len(self.amityville.rooms)
@@ -71,8 +81,6 @@ class TestAmityville(unittest.TestCase):
         """
         test if a staff member is added
         """
-        self.amityville.people = []
-
         initial_staff_count = len(self.amityville.staff)
         self.amityville.add_person("ALEX", "STAFF", "NO")
         final_staff_count = len(self.amityville.people)
@@ -106,14 +114,10 @@ class TestAmityville(unittest.TestCase):
         result = self.amityville.add_person("ALEX", "STAFF", "YES")
         self.assertEqual(result, "Staff cannot be allocated a livingspace.")
 
-    def test_allocate_livingspace_fellow_does_not_exist(self):
+    def test_allocate_livingspace_to_nonexistent_fellow(self):
         """
         test allocating a livingspace to a non existant fellow
         """
-        self.amityville.rooms = []
-        self.amityville.people = []
-
-        self.amityville.create_room("MOON", "LIVINGSPACE")
         result = self.amityville.allocate_livingspace("ALEX")
         self.assertEqual(result, "ALEX does not exist.")
 
@@ -121,8 +125,6 @@ class TestAmityville(unittest.TestCase):
         """
         test if a fellow has already been allocated a livingspace
         """
-        self.amityville.rooms = []
-
         self.amityville.create_room("MOON", "LIVINGSPACE")
         self.amityville.add_person("ALEX", "FELLOW", "YES")
         result = self.amityville.allocate_livingspace("ALEX")
@@ -132,8 +134,6 @@ class TestAmityville(unittest.TestCase):
         """
         test if a fellow is allocated a living space
         """
-        self.amityville.rooms = []
-
         self.amityville.create_room("MOON", "LIVINGSPACE")
         self.amityville.add_person("ALEX", "FELLOW", "YES")
         self.assertIn("ALEX", self.amityville.livingspace_allocations["MOON"])
@@ -155,15 +155,10 @@ class TestAmityville(unittest.TestCase):
         result = self.amityville.allocate_livingspace("ALEX")
         self.assertEqual(result, "No vaccant livingspace.")
 
-    def test_allocate_office_staff_does_not_exist(self):
+    def test_allocate_office_to_nonexistent_staff(self):
         """
         test allocating a livingspace to a non existant fellow
         """
-        self.amityville.rooms = []
-        self.amityville.offices = []
-        self.amityville.people = []
-
-        self.amityville.create_room("SUN", "OFFICE")
         result = self.amityville.allocate_office("ALEX")
         self.assertEqual(result, "ALEX does not exist.")
 
@@ -171,9 +166,6 @@ class TestAmityville(unittest.TestCase):
         """
         test if a staff has already been allocated an office
         """
-        self.amityville.rooms = []
-        self.amityville.offices = []
-
         self.amityville.create_room("SUN", "OFFICE")
         self.amityville.add_person("ALEX", "STAFF", "NO")
         result = self.amityville.allocate_office("ALEX")
@@ -183,9 +175,6 @@ class TestAmityville(unittest.TestCase):
         """
         test if a staff is allocated an office
         """
-        self.amityville.rooms = []
-        self.amityville.offices = []
-
         self.amityville.create_room("SUN", "OFFICE")
         self.amityville.add_person("ALEX", "STAFF", "NO")
         self.assertIn("ALEX", self.amityville.office_allocations["SUN"])
@@ -211,7 +200,7 @@ class TestAmityville(unittest.TestCase):
         result = self.amityville.allocate_office("ALEX")
         self.assertEqual(result, "No vaccant office.")
 
-    def test_no_rooms_to_reallocate_to(self):
+    def test_nonexistent_rooms_to_reallocate_to(self):
         """
         test there are no rooms added in order to reallocate
         """
@@ -220,7 +209,7 @@ class TestAmityville(unittest.TestCase):
         result = self.amityville.reallocate_person("S1", "SUN")
         self.assertEqual(result, "SUN does not exist.")
 
-    def test_there_are_no_people_to_reallocate(self):
+    def test_nonexistent_people_to_reallocate(self):
         """
         test there is no one to reallocate
         """
@@ -234,8 +223,6 @@ class TestAmityville(unittest.TestCase):
         """
         test is persons are reallocated
         """
-        self.amityville.rooms = []
-
         self.amityville.create_room("SUN", "OFFICE")
         self.amityville.add_person("ALEX", "STAFF", "NO")
         self.amityville.create_room("SHINE", "OFFICE")
@@ -246,55 +233,38 @@ class TestAmityville(unittest.TestCase):
         """
         test if a staff is reallocated to a living space
         """
-        self.amityville.rooms = []
-
         self.amityville.create_room("MOON", "LIVINGSPACE")
-        self.amityville.create_room("SUN", "OFFICE")
         self.amityville.add_person("ALEX", "STAFF", "NO")
         result = self.amityville.reallocate_person("S1", "MOON")
         self.assertEqual(
             result, "Cannot reallocate staff member to a livingspace.")
 
-    def test_reallocating_to_full_room(self):
+    def test_reallocating_to_full_livingspace(self):
         """
-        test if room being reallocated to is full
+        test if room being reallocated to is already full
         """
-        self.amityville.people = []
-
         self.amityville.create_room("MOON", "LIVINGSPACE")
         self.amityville.add_person("ALEX", "FELLOW", "YES")
         self.amityville.add_person("JOE", "FELLOW", "YES")
         self.amityville.add_person("TINA", "FELLOW", "YES")
         self.amityville.add_person("IBRA", "FELLOW", "YES")
-        self.amityville.create_room("LIGHT", "LIVINGSPACE")
         self.amityville.add_person("MILLY", "FELLOW", "YES")
         result = self.amityville.reallocate_person("F5", "MOON")
         self.assertEqual(result, "MOON is already full.")
 
-    def test_reallocating_to_currently_occupied_room(self):
+    def test_reallocating_to_currently_occupied_livingspace(self):
         """
         test if the room being reallocated to is the one they are currently residing in
         """
-        self.amityville.people = []
-
         self.amityville.create_room("MOON", "LIVINGSPACE")
         self.amityville.add_person("ALEX", "FELLOW", "YES")
-        self.amityville.add_person("JOE", "FELLOW", "YES")
-        self.amityville.add_person("TINA", "FELLOW", "YES")
-        self.amityville.add_person("IBRA", "FELLOW", "YES")
-        result = self.amityville.reallocate_person("F4", "MOON")
-        self.assertEqual(result, "IBRA already allocated to MOON.")
+        result = self.amityville.reallocate_person("F1", "MOON")
+        self.assertEqual(result, "ALEX already allocated to MOON.")
 
-    def test_reallocating_and_not_yet_allocated(self):
+    def test_reallocating_to_a_livingspace_and_not_yet_allocated_a_livingspace(self):
         """
-        test if reallocating a person not yet allocated
+        test reallocating a person who is not yet allocated.
         """
-        self.amityville.rooms = []
-
-        self.amityville.add_person("ALEX", "FELLOW", "YES")
         self.amityville.create_room("MOON", "LIVINGSPACE")
-        self.amityville.add_person("JOE", "FELLOW", "YES")
-        self.amityville.add_person("TINA", "FELLOW", "YES")
-        self.amityville.add_person("IBRA", "FELLOW", "YES")
         result = self.amityville.reallocate_person("F1", "MOON")
         self.assertEqual(result, "ALEX is not allocated any livingspace.")

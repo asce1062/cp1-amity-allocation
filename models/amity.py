@@ -5,6 +5,7 @@ import random
 from models.room import LivingSpace, Office
 from models.person import Fellow, Staff
 
+
 class Amity(object):
     """
     Class Amity
@@ -296,3 +297,20 @@ class Amity(object):
         print all people
         """
         pass
+
+
+# amityville = Amity()
+# amityville.create_room("SUN", "OFFICE")
+# amityville.create_room("SHINE", "OFFICE")
+# amityville.create_room("MOON", "LIVINGSPACE")
+# amityville.create_room("LIGHT", "LIVINGSPACE")
+# amityville.add_person("ALEX", "FELLOW", "YES")
+# amityville.add_person("XELA", "STAFF", "NO")
+# amityville.allocate_livingspace("ALEX")
+# amityville.allocate_livingspace("ALEX")
+# amityville.reallocate_person("F1","SUN")
+# amityville.reallocate_person("S1","MOON")
+# print (amityville.room_data)
+# print (amityville.person_data)
+# print (amityville.office_allocations)
+# print (amityville.livingspace_allocations)
