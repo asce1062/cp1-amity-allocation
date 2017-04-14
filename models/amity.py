@@ -3,9 +3,10 @@ Class Amity
 """
 import random
 
+from clint.textui import colored, puts
+
 from models.room import LivingSpace, Office
 from models.person import Fellow, Staff
-from clint.textui import colored, puts
 
 
 class Amity(object):
@@ -28,10 +29,10 @@ class Amity(object):
     office_allocations = {}
     # Dictionary containing a list of all occupied livingspaces and occupants.
     livingspace_allocations = {}
-    # List of all unallocated stuff.
-    unallocated_staff = []
-    # List of all unallocated fellows.
-    unallocated_fellows = []
+    # List of all fellows not yet allocated to a livingspace.
+    unallocated_livingspace = []
+    # List of all fellows not yet allocated to an office.
+    unallocated_office = []
     # Dictionary containing all rooms.
     room_data = {}
     # Dictionary containing all people.
@@ -195,16 +196,16 @@ class Amity(object):
                 # Insert the fellow name to the randomly chosen room.
                 self.livingspace_allocations[random_living_space].append(
                     fellow_name.upper())
-                # Check if the fellow name exists in a room within the
-                # vaccant_livingspaces list and remove them.
-                if fellow_name in vacant_livingspaces:
-                    vacant_livingspaces.remove(fellow_name)
+                # Check if the fellow name exists in unallocated_livingspace
+                # list and remove them.
+                if fellow_name in self.unallocated_livingspace:
+                    self.unallocated_livingspace.remove(fellow_name)
 
                 return '{} allocated to {}.' \
                     .format(fellow_name.upper(), random_living_space)
 
             else:
-                vacant_livingspaces.append(fellow_name.upper())
+                self.unallocated_livingspace.append(fellow_name.upper())
                 return 'No vaccant livingspace.'
 
     def allocate_office(self, person_name):
@@ -231,12 +232,12 @@ class Amity(object):
                 self.office_allocations[random_office].append(
                     person_name.upper())
 
-                if person_name in vacant_offices:
-                    vacant_offices.remove(person_name)
+                if person_name in self.unallocated_office:
+                    self.unallocated_office.remove(person_name)
                 return '{} allocated to {}.' .format(person_name.upper(), random_office)
 
             else:
-                vacant_offices.append(person_name.upper())
+                self.unallocated_office.append(person_name.upper())
                 return 'No vaccant office.'
 
     def reallocate_person(self, person_id, room_name):
@@ -357,10 +358,11 @@ class Amity(object):
         """
         Print everyone in the system starting with their unique ID's
         """
+        # Check if person data dictionary is empty.
         if not self.person_data:
             return 'No one exists in the system yet.'
         else:
+            # Get person_data (key, value) pairs, as 2-tuples.
             for people_id, people_details in self.person_data.items():
                 puts(colored.green(str(people_id) + ':' + str(people_details)))
-
             return 'Done.'

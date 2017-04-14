@@ -25,8 +25,8 @@ class TestAmityville(unittest.TestCase):
         del self.amityville.people[:]
         del self.amityville.staff[:]
         del self.amityville.fellows[:]
-        del self.amityville.unallocated_staff[:]
-        del self.amityville.unallocated_fellows[:]
+        del self.amityville.unallocated_livingspace[:]
+        del self.amityville.unallocated_office[:]
 
     def test_create_room_already_exists(self):
         """
@@ -262,6 +262,24 @@ class TestAmityville(unittest.TestCase):
         """
         test reallocating a person who is not yet allocated.
         """
+        self.amityville.add_person("ALEX", "FELLOW", "YES")
         self.amityville.create_room("MOON", "LIVINGSPACE")
         result = self.amityville.reallocate_person("F1", "MOON")
         self.assertEqual(result, "ALEX is not allocated any livingspace.")
+
+    def test_print_people_details_no_data_yet(self):
+        """
+        test print people details and no people added to the system yet.
+        """
+        self.amityville.person_data = {}
+        result = self.amityville.print_people_details()
+        self.assertEqual(result, 'No one exists in the system yet.')
+
+    def test_print_people_details(self):
+        """
+        test print people details
+        """
+        self.amityville.person_data = {}
+        self.amityville.add_person("ALEX", "STAFF", "NO")
+        result = self.amityville.print_people_details()
+        self.assertEqual(result, 'Done.')
