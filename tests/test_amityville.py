@@ -1,6 +1,7 @@
 """
 tests for amityville.
 """
+import os
 import unittest
 
 from models.amity import Amity
@@ -19,6 +20,12 @@ class TestAmityville(unittest.TestCase):
         provide cleanup for all
         clear list data for each test.
         """
+        # remove all entries in dict
+        self.amityville.office_allocations.clear()
+        self.amityville.livingspace_allocations.clear()
+        self.amityville.room_data.clear()
+        self.amityville.person_data.clear()
+        # remove all entries in list
         del self.amityville.rooms[:]
         del self.amityville.offices[:]
         del self.amityville.livingspaces[:]
@@ -201,8 +208,7 @@ class TestAmityville(unittest.TestCase):
         """
         test there are no rooms added in order to reallocate
         """
-        self.amityville.room_data = {}
-
+        self.amityville.add_person("ALEX", "STAFF", "NO")
         result = self.amityville.reallocate_person("S1", "SUN")
         self.assertEqual(result, "SUN does not exist.")
 
@@ -210,15 +216,24 @@ class TestAmityville(unittest.TestCase):
         """
         test there is no one to reallocate
         """
-        self.amityville.person_data = {}
-
         self.amityville.create_room("SUN", "OFFICE")
         result = self.amityville.reallocate_person("S1", "SUN")
         self.assertEqual(result, "S1 does not exist.")
 
-    def test_reallocate_person(self):
+    def test_reallocate_person_livingspace(self):
         """
-        test is persons are reallocated
+        test if person is reallocated to a livingspace
+        """
+        self.amityville.create_room("MOON", "LIVINGSPACE")
+        self.amityville.add_person("ALEX", "FELLOW", "NO")
+        self.amityville.allocate_livingspace("ALEX")
+        self.amityville.create_room("LIGHT", "LIVINGSPACE")
+        result = self.amityville.reallocate_person("F1", "LIGHT")
+        self.assertEqual(result, "ALEX has been reallocated to LIGHT.")
+
+    def test_reallocate_person_office(self):
+        """
+        test if person is reallocated to an office.
         """
         self.amityville.create_room("SUN", "OFFICE")
         self.amityville.add_person("ALEX", "STAFF", "NO")
@@ -245,9 +260,26 @@ class TestAmityville(unittest.TestCase):
         self.amityville.add_person("JOE", "FELLOW", "YES")
         self.amityville.add_person("TINA", "FELLOW", "YES")
         self.amityville.add_person("IBRA", "FELLOW", "YES")
+        self.amityville.create_room("LIGHT", "LIVINGSPACE")
         self.amityville.add_person("MILLY", "FELLOW", "YES")
         result = self.amityville.reallocate_person("F5", "MOON")
         self.assertEqual(result, "MOON is already full.")
+
+    def test_reallocate_person_to_full_office(self):
+        """
+        test if room being reallocated to is already full
+        """
+        self.amityville.create_room("SUN", "OFFICE")
+        self.amityville.add_person("ALEX", "STAFF", "NO")
+        self.amityville.add_person("JOE", "STAFF", "NO")
+        self.amityville.add_person("TINA", "STAFF", "NO")
+        self.amityville.add_person("IBRA", "STAFF", "NO")
+        self.amityville.add_person("MILLY", "STAFF", "NO")
+        self.amityville.add_person("PAU", "STAFF", "NO")
+        self.amityville.create_room("SUN", "OFFICE")
+        self.amityville.add_person("JONA", "STAFF", "NO")
+        result = self.amityville.reallocate_person("s7", "SUN")
+        self.assertEqual(result, "SUN is already full.")
 
     def test_reallocate_person_to_currently_occupied_livingspace(self):
         """
@@ -258,6 +290,15 @@ class TestAmityville(unittest.TestCase):
         result = self.amityville.reallocate_person("F1", "MOON")
         self.assertEqual(result, "ALEX already allocated to MOON.")
 
+    def test_reallocate_person_to_currently_occupied_office(self):
+        """
+        test if the room being reallocated to is the one they are currently residing in
+        """
+        self.amityville.create_room("SUN", "OFFICE")
+        self.amityville.add_person("ALEX", "STAFF", "NO")
+        result = self.amityville.reallocate_person("S1", "SUN")
+        self.assertEqual(result, "ALEX already allocated to SUN.")
+
     def test_reallocate_person_to_a_livingspace_and_not_yet_allocated_a_livingspace(self):
         """
         test reallocating a person who is not yet allocated.
@@ -265,19 +306,175 @@ class TestAmityville(unittest.TestCase):
         self.amityville.add_person("ALEX", "FELLOW", "YES")
         self.amityville.create_room("MOON", "LIVINGSPACE")
         result = self.amityville.reallocate_person("F1", "MOON")
-        self.assertEqual(result, "ALEX is not allocated any livingspace.")
+        self.assertEqual(result, "ALEX not yet allocated to any livingspace.")
+
+    def test_reallocate_person_to_a_livingspace_and_not_yet_allocated_an_office(self):
+        """
+        test reallocating a person who is not yet allocated.
+        """
+        self.amityville.add_person("ALEX", "STAFF", "NO")
+        self.amityville.create_room("SUN", "OFFICE")
+        self.amityville.create_room("SHINE", "OFFICE")
+        result = self.amityville.reallocate_person("S1", "SHINE")
+        self.assertEqual(result, "ALEX not yet allocated to any office.")
 
     def test_print_people_details_no_data_yet(self):
         """
         test print people details and no people added to the system yet.
         """
-        self.amityville.person_data = {}
         result = self.amityville.print_people_details()
         self.assertEqual(result, 'No one exists in the system yet.')
 
+    def test_load_people(self):
+        """
+        test if people are loaded from a file.
+        """
+        filename = "people"
+        result = self.amityville.load_people(filename)
+        self.assertEqual(result, "People successfully loaded.")
+
+    def test_load_people_no_filename(self):
+        """
+        test if no file name is provided.
+        """
+        result = self.amityville.load_people("")
+        self.assertEqual(result, "Filename must be provided.")
+
+    def test_load_people_invalid_accommodation(self):
+        """
+        Test if invalid accommodation input is handled.
+        """
+        filename = "invalid_accommodation"
+        result = self.amityville.load_people(filename)
+        self.assertEqual(result, "Invalid accommodation input.")
+
+    def test_load_people_invalid_number_of_arguments(self):
+        """
+        test if there are more than 4 arguments.
+        """
+        filename = "invalid_number_of_arguments"
+        result = self.amityville.load_people(filename)
+        self.assertEqual(result, "Invalid number of arguments input.")
+
+    def test_load_people_invalid_job_description(self):
+        """
+        test for invalid job description.
+        """
+        filename = "invalid_job_description"
+        result = self.amityville.load_people(filename)
+        self.assertEqual(result, "Invalid job description.")
+
+    def test_load_rooms_from_file(self):
+        """
+        test if rooms are loaded from file.
+        """
+        filename = "rooms"
+        result = self.amityville.load_rooms(filename)
+        self.assertEqual(result, "Rooms successfully loaded from file.")
+
+    def test_load_rooms_from_file_no_filename(self):
+        """
+        test if no file name is provided.
+        """
+        filename = ""
+        result = self.amityville.load_rooms(filename)
+        self.assertEqual(result, "Filename must be provided.")
+
+    def test_load_rooms_from_file_invalid_input(self):
+        """
+        test if there are more than 2 arguments.
+        """
+        filename = "rooms_invalid_input"
+        result = self.amityville.load_rooms(filename)
+        self.assertEqual(result, "Invalid number of arguments input.")
+
+    def test_print_allocations_to_screen(self):
+        """
+        test if allocations are successfully printed to the screen.
+        """
+        self.amityville.create_room("SUN", "OFFICE")
+        self.amityville.create_room("MOON", "LIVINGSPACE")
+        self.amityville.add_person("ALEX", "FELLOW", "YES")
+        filename = ""
+        result = self.amityville.print_allocations(filename)
+        self.assertEqual(result, "Done.")
+
+    def test_print_allocations_to_file(self):
+        """
+        test if allocations are successfully printed out to a file.
+        """
+        self.amityville.create_room("SUN", "OFFICE")
+        self.amityville.create_room("MOON", "LIVINGSPACE")
+        self.amityville.add_person("ALEX", "FELLOW", "YES")
+        filename = "allocations"
+        result = self.amityville.print_allocations(filename)
+        self.assertTrue(os.path.isfile("models/allocations.txt"))
+        self.assertEqual(result, "Done.")
+
+    def test_print_specific_room_allocations(self):
+        """
+        test if specific room allocations are printed to the screen.
+        """
+        self.amityville.create_room("SUN", "OFFICE")
+        self.amityville.add_person("ALEX", "STAFF", "NO")
+        result = self.amityville.print_specific_room_allocations("SUN")
+        self.assertEqual(result, "Done.")
+
+    def test_print_specific_room_allocations_invalid_input(self):
+        """
+        test if invalid input is handled.
+        """
+        result = self.amityville.print_specific_room_allocations("SUN(1)")
+        self.assertEqual(result, "Invalid input.")
+
+    def test_print_unallocated_to_screen(self):
+        """
+        test if un-allocations are printed to the screen.
+        """
+        filename = ""
+        result = self.amityville.print_unallocated(filename)
+        self.assertEqual(result, "Done.")
+
+    def test_print_unallocated_to_file(self):
+        """
+        test if un-allocations are printed into a file.
+        """
+        filename = "unallocated"
+        result = self.amityville.print_unallocated(filename)
+        self.assertTrue(os.path.isfile("models/unallocated.txt"))
+        self.assertEqual(result, "Done.")
+
+    def test_print_rooms(self):
+        """
+        test if existing rooms are printed to the screen.
+        """
+        result = self.amityville.print_rooms()
+        self.assertEqual(result, "Done.")
+
+    def test_print_fellows(self):
+        """
+        test if existing fellows are printed to the screen.
+        """
+        result = self.amityville.print_fellows()
+        self.assertEqual(result, "Done.")
+
+    def test_print_staff(self):
+        """
+        test if existing staff are printed to the screen.
+        """
+        result = self.amityville.print_staff()
+        self.assertEqual(result, "Done.")
+
+    def test_print_all_people(self):
+        """
+        test if all existing people are printed to the screen.
+        """
+        result = self.amityville.print_all_people()
+        self.assertEqual(result, "Done.")
+
     def test_print_people_details(self):
         """
-        test print people details
+        test print people details.
         """
         self.amityville.person_data = {}
         self.amityville.add_person("ALEX", "STAFF", "NO")

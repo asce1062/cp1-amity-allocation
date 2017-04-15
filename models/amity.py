@@ -261,9 +261,9 @@ class Amity(object):
 
             if room_type == 'LIVINGSPACE':
                 current_number_of_room_occupants = len(
-                    self.livingspace_allocations[room_name])
+                    self.livingspace_allocations[room_name.upper()])
 
-                if person_name in self.livingspace_allocations[room_name]:
+                if person_name in self.livingspace_allocations[room_name.upper()]:
                     return "{} already allocated to {}." .format(person_name, room_name)
 
                 elif current_number_of_room_occupants == room_capacity:
@@ -282,14 +282,14 @@ class Amity(object):
                                     person_name)
                                 return '{} has been reallocated to {}.' \
                                     .format(person_name, room_name.upper())
-                    return '{} is not allocated any livingspace.' .format(person_name)
+                    return '{} not yet allocated to any livingspace.' .format(person_name)
 
             if room_type == 'OFFICE':
                 current_number_of_room_occupants = len(
                     self.office_allocations[room_name.upper()])
 
                 if person_name in self.office_allocations[room_name.upper()]:
-                    return '{} already allocated to {}' .format(person_name, room_name)
+                    return '{} already allocated to {}.' .format(person_name, room_name)
 
                 elif current_number_of_room_occupants == room_capacity:
                     return '{} is already full.' .format(room_name)
@@ -310,49 +310,215 @@ class Amity(object):
         """
         load_people method
         """
-        pass
+
+        if filename:
+            # Define file directory
+            with open("models/" + filename + ".txt") as people_file:
+                # Read until EOF and return a list containing the lines.
+                people = people_file.readlines()
+
+            for person in people:
+                # Return a list of people and split at all whitespaces.
+                person_data = person.split()
+                # Join the first and last names to one name.
+                person_name = person_data[0] + person_data[1]
+                job_description = person_data[2]
+
+                if job_description == 'STAFF':
+                    # If the job_description is STAFF default entry for
+                    # accommodation is NO.
+                    wants_accommodation = 'NO'
+                    # Call add_person method.
+                    self.add_person(person_name, job_description,
+                                    wants_accommodation)
+
+                elif job_description == "FELLOW":
+                    if len(person_data) <= 3:
+                        wants_accommodation = "NO"
+                        self.add_person(
+                            person_name, job_description, wants_accommodation)
+
+                    elif len(person_data) == 4:
+                        accommodation_option = person_data[3]
+
+                        if accommodation_option == "Y":
+                            wants_accommodation = "YES"
+                            self.add_person(
+                                person_name, job_description, wants_accommodation)
+
+                        elif accommodation_option == "N":
+                            wants_accommodation = "NO"
+                            self.add_person(
+                                person_name, job_description, wants_accommodation)
+
+                        elif accommodation_option not in ['Y', 'N']:
+                            return "Invalid accommodation input."
+
+                    else:
+                        return "Invalid number of arguments input."
+
+                else:
+                    return "Invalid job description."
+            return "People successfully loaded."
+
+        else:
+
+            return "Filename must be provided."
 
     def load_rooms(self, filename):
         """
         load_rooms method
         """
-        pass
+        if filename:
+            with open("models/" + filename + ".txt") as rooms_file:
+                rooms = rooms_file.readlines()
+
+            for room in rooms:
+                rooms_data = room.split()
+
+                if len(rooms_data) > 2:
+                    return "Invalid number of arguments input."
+
+                rooms_name = rooms_data[0]
+                rooms_type = rooms_data[1]
+                self.create_room(rooms_name, rooms_type)
+
+            return "Rooms successfully loaded from file."
+
+        else:
+
+            return "Filename must be provided."
 
     def print_allocations(self, filename):
         """
         print_allocations method
         """
-        pass
+        if filename:
+            file = open("models/" + filename + ".txt", "w")
+            file.write("LIVINGSPACE ALLOCATIONS\n")
+
+            for room_name in self.livingspace_allocations:
+                file.write("\n{}\n" .format(room_name))
+                file.write("-" * 40)
+                file.write("\n")
+                living_space_occupants = self.livingspace_allocations[room_name]
+                file.write(", ".join(living_space_occupants))
+                file.write("\n")
+
+            file.write("\n\nOFFICE ALLOCATIONS\n")
+
+            for room_name in self.office_allocations:
+                file.write("\n{}\n" .format(room_name))
+                file.write("-" * 40)
+                file.write("\n")
+                office_occupants = self.office_allocations[room_name]
+                file.write(", ".join(office_occupants))
+                file.write("\n")
+
+            return "Done."
+        else:
+            puts(colored.blue('\nLIVINGSPACE ALLOCATIONS'))
+            for room_name in self.livingspace_allocations:
+                livingspace_occupants = self.livingspace_allocations[room_name]
+                puts(colored.cyan('\n{}' .format(room_name)))
+                puts(colored.cyan('-' * 40))
+                puts(colored.green(',' .join(livingspace_occupants)))
+            puts(colored.blue('\nOFFICE ALLOCATIONS'))
+            for room_name in self.office_allocations:
+                office_occupants = self.office_allocations[room_name]
+                puts(colored.cyan('\n{}' .format(room_name)))
+                puts(colored.cyan('-' * 40))
+                puts(colored.green(', ' .join(office_occupants)))
+
+            return 'Done.'
+
+    def print_specific_room_allocations(self, room_name):
+        """
+        print_specific_room_allocations method
+        """
+        room_name = room_name.upper()
+        all_allocations = dict(self.livingspace_allocations)
+        all_allocations.update(self.office_allocations)
+
+        if room_name.isalpha() is False:
+            return "Invalid input."
+
+        for room in all_allocations:
+            if room_name in room:
+                puts(colored.blue('\n{}' .format(room_name)))
+                puts(colored.blue('-' * 40))
+                puts(colored.green(', '.join(all_allocations[room_name])))
+        return "Done."
 
     def print_unallocated(self, filename):
         """
         print_unallocated method
         """
-        pass
+        if filename:
+            file = open("models/" + filename + ".txt", "w")
+            file.write("UNALLOCATED LIVING SPACES\n")
+            file.write(", ".join(self.unallocated_livingspace))
+            file.write("\n")
+            file.write("-" * 40)
+            file.write("\n\nUNALLOCATED OFFICES\n")
+            file.write(", ".join(self.unallocated_office))
+            return "Done."
 
-    def print_room(self):
+        else:
+            puts(colored.blue('UNALLOCATED LIVINGSPACE'))
+            puts(colored.blue('-' * 40))
+            puts(colored.green(', ' .join(self.unallocated_livingspace)))
+            puts('\n')
+            puts(colored.blue('UNALLOCATED OFFICE'))
+            puts(colored.blue('-' * 40))
+            puts(colored.green(', ' .join(self.unallocated_office)))
+            puts('\n')
+            return "Done."
+
+    def print_rooms(self):
         """
         print_room method
         """
-        pass
+        puts(colored.blue('ALL ROOMS:'))
+        puts(colored.blue('-' * 40))
+        puts(colored.green('{}' .format(self.rooms)))
+        puts('\n')
+        puts(colored.blue('LIVINGSPACES:'))
+        puts(colored.blue('-' * 40))
+        puts(colored.green('{}' .format(self.livingspaces)))
+        puts('\n')
+        puts(colored.blue('OFFICES:'))
+        puts(colored.blue('-' * 40))
+        puts(colored.green('{}' .format(self.offices)))
+        return 'Done.'
 
     def print_fellows(self):
         """
         print all fellows
         """
-        pass
+        puts(colored.blue('ALL FELLOWS:'))
+        puts(colored.blue('-' * 40))
+        puts(colored.green('{}' .format(self.fellows)))
+        return 'Done.'
 
     def print_staff(self):
         """
         print all staff
         """
-        pass
+        puts(colored.blue('ALL STAFF:'))
+        puts(colored.blue('-' * 40))
+        puts(colored.green('{}' .format(self.staff)))
+        return "Done."
 
     def print_all_people(self):
         """
         print all people method
         """
-        pass
+        puts(colored.blue('ALL PEOPLE:'))
+        puts(colored.blue('-' * 40))
+        self.people.sort()
+        puts(colored.green('{}' .format(self.people)))
+        return "Done."
 
     def print_people_details(self):
         """
