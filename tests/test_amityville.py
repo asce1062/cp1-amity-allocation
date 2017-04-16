@@ -390,12 +390,21 @@ class TestAmityville(unittest.TestCase):
         result = self.amityville.load_people(filename)
         self.assertEqual(result, 'Invalid accommodation input.')
 
-    def test_load_people_invalid_number_of_arguments(self):
+    def test_load_people_invalid_number_of_arguments_less(self):
         """
-        test if there are more than 4 arguments.
+        test if arguments provided are less than or equal to 2.
         """
 
-        filename = 'invalid_number_of_arguments'
+        filename = 'invalid_number_of_arguments_less'
+        result = self.amityville.load_people(filename)
+        self.assertEqual(result, 'Invalid number of arguments input.')
+
+    def test_load_people_invalid_number_of_arguments_more(self):
+        """
+        test if arguments provided are more than 4.
+        """
+
+        filename = 'invalid_number_of_arguments_more'
         result = self.amityville.load_people(filename)
         self.assertEqual(result, 'Invalid number of arguments input.')
 
