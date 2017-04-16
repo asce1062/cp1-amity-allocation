@@ -476,7 +476,7 @@ class Amity(object):
         all_allocations = dict(self.livingspace_allocations)
         # Add office allocations to all_allocations dict.
         all_allocations.update(self.office_allocations)
-        # Male sure room name consists of alphabets only.
+        # Make sure room name consists of alphabets only.
         if room_name.isalpha() is False:
             return "Invalid input."
         # Iterate through all_allocations.
