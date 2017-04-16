@@ -1,9 +1,13 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 """
 Class Room
 """
 
 
 class Room(object):
+
     """
     Room object
     """
@@ -13,6 +17,7 @@ class Room(object):
 
 
 class Office(Room):
+
     """
     Office
     """
@@ -20,10 +25,11 @@ class Office(Room):
     room_capacity = 6
 
     def __init__(self, room_name):
-        self.room_type = "OFFICE"
+        self.room_type = 'OFFICE'
 
 
 class LivingSpace(Room):
+
     """
     Living Space
     """
@@ -31,4 +37,4 @@ class LivingSpace(Room):
     room_capacity = 4
 
     def __init__(self, room_name):
-        self.room_type = "LIVINGSPACE"
+        self.room_type = 'LIVINGSPACE'
