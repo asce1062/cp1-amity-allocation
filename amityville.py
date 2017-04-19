@@ -18,8 +18,9 @@ Usage:
     my_program print_staff
     my_program print_all_people
     my_program print_people_details
-    my_program load_state [--db=dbname]
+    my_program create_db [--db=dbname]
     my_program save_state [--db=dbname]
+    my_program load_state [--db=dbname]
     my_program clear_db [--db=dbname]
     my_program clear
     my_program quit
@@ -35,6 +36,7 @@ Arguments:
     <fellow_name> The name of a fellow
     <person_id> The ID of the person
     [--o=filename] The name of the text file to write to or read from
+    [--db=dbname] The name of the database to write to or read from
 
 Options:
     -i, --interactive  Interactive Mode
@@ -246,9 +248,12 @@ class Amityville(cmd.Cmd):
     def do_clear_db(self, arg):
         """ Usage: clear_db [--db=dbname] """
 
-        dbname = arg['--db']
+        if arg['--db']:
+            db = arg['--db']
+        else:
+            db = ''
 
-        puts(colored.green(amity.clear_db(dbname)))
+        puts(colored.green(amity.clear_db(dbname=db)))
 
     @docopt_cmd
     def do_clear(self, arg):

@@ -901,6 +901,10 @@ class Amity(object):
         else:
             name = 'amity'
 
+        # Clear database to prevent saving data that already exists.
+
+        self.clear_db(name)
+
         # new session.   no connections are in use.
 
         DBSession = sessionmaker()
@@ -1117,6 +1121,10 @@ class Amity(object):
 
             Amity.room_data[room_name[0]] = [room_name[0],
                                              room_name[1], room_name[2]]
+
+        # Clear database to prevent multiple loading of data.
+
+        self.clear_db(name)
         return 'Data has been loaded into the system successfully.'
 
     def clear_db(self, dbname=''):
