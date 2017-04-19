@@ -18,6 +18,9 @@ Usage:
     my_program print_staff
     my_program print_all_people
     my_program print_people_details
+    my_program load_state [--db=dbname]
+    my_program save_state [--db=dbname]
+    my_program clear_db [--db=dbname]
     my_program clear
     my_program quit
     my_program (-i | --interactive)
@@ -46,6 +49,7 @@ from docopt import docopt, DocoptExit
 from clint.textui import colored, puts
 
 from models.amity import Amity
+from databases.database_models import create_db
 
 amity = Amity()
 
@@ -208,6 +212,43 @@ class Amityville(cmd.Cmd):
         """ Usage: print_people_details """
 
         puts(colored.green(amity.print_people_details()))
+
+    @docopt_cmd
+    def do_create_db(self, arg):
+        """ Usage: create_db [--db=dbname] """
+
+        dbname = arg['--db']
+
+        create_db(dbname)
+
+    @docopt_cmd
+    def do_save_state(self, arg):
+        """ Usage: save_state [--db=dbname] """
+
+        if arg['--db']:
+            db = arg['--db']
+        else:
+            db = ''
+
+        puts(colored.green(amity.save_state(dbname=db)))
+
+    @docopt_cmd
+    def do_load_state(self, arg):
+        """ Usage: load_state [--db=dbname] """
+
+        if arg['--db']:
+            db = arg['--db']
+        else:
+            db = ''
+        puts(colored.green(amity.load_state(dbname=db)))
+
+    @docopt_cmd
+    def do_clear_db(self, arg):
+        """ Usage: clear_db [--db=dbname] """
+
+        dbname = arg['--db']
+
+        puts(colored.green(amity.clear_db(dbname)))
 
     @docopt_cmd
     def do_clear(self, arg):

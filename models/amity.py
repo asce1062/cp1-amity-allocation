@@ -4,12 +4,16 @@
 Class Amity
 """
 
+import os
 import random
 
 from clint.textui import colored, puts
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 from models.room import LivingSpace, Office
 from models.person import Fellow, Staff
+from databases.database_models import *
 
 
 class Amity(object):
@@ -498,45 +502,33 @@ class Amity(object):
         if filename:
 
             # Define file directory
+            if os.path.isfile('models/' + filename + '.txt') is False:
+                return 'File does not exist.'
+            else:
+                with open('models/' + filename + '.txt') as people_file:
 
-            with open('models/' + filename + '.txt') as people_file:
+                    # Read until EOF and return a list containing the lines.
 
-                # Read until EOF and return a list containing the lines.
+                    people = people_file.readlines()
+                for person in people:
 
-                people = people_file.readlines()
-            for person in people:
+                    # Return a list of people and split at all whitespaces.
 
-                # Return a list of people and split at all whitespaces.
+                    person_data = person.split()
 
-                person_data = person.split()
+                    # Check if person_data length is less than or equal to two.
 
-                # Check if person_data length is less than or equal to two.
+                    if len(person_data) <= 2:
+                        return 'Invalid number of arguments input.'
 
-                if len(person_data) <= 2:
-                    return 'Invalid number of arguments input.'
+                    # Join the first and last names to one name.
 
-                # Join the first and last names to one name.
+                    person_name = person_data[0] + person_data[1]
+                    job_description = person_data[2]
+                    if job_description == 'STAFF':
 
-                person_name = person_data[0] + person_data[1]
-                job_description = person_data[2]
-                if job_description == 'STAFF':
-
-                    # If the job_description is STAFF default entry for
-                    # accommodation is NO.
-
-                    wants_accommodation = 'NO'
-
-                    # Call add_person method.
-
-                    self.add_person(person_name, job_description,
-                                    wants_accommodation)
-                elif job_description == 'FELLOW':
-
-                    # Check the length of each line.
-
-                    if len(person_data) <= 3:
-
-                        # If the length is 3 default wants_accommodation to NO.
+                        # If the job_description is STAFF default entry for
+                        # accommodation is NO.
 
                         wants_accommodation = 'NO'
 
@@ -544,46 +536,61 @@ class Amity(object):
 
                         self.add_person(person_name, job_description,
                                         wants_accommodation)
-                    elif len(person_data) == 4:
+                    elif job_description == 'FELLOW':
 
-                        # Check if accommodation option is provided.
-                        # Accommodation option is the third index since first
-                        # name and last name are joined to one.
+                        # Check the length of each line.
 
-                        accommodation_option = person_data[3]
-                        if accommodation_option == 'Y':
+                        if len(person_data) <= 3:
 
-                            # Convert accommodation option to YES for
-                            # consistency.
-
-                            wants_accommodation = 'YES'
-
-                            # Call add_person method.
-
-                            self.add_person(person_name,
-                                            job_description,
-                                            wants_accommodation)
-                        elif accommodation_option == 'N':
-
-                            # Convert accommodation option to NO for
-                            # consistency.
+                            # If the length is 3 default wants_accommodation to
+                            # NO.
 
                             wants_accommodation = 'NO'
 
                             # Call add_person method.
 
-                            self.add_person(person_name,
-                                            job_description,
+                            self.add_person(person_name, job_description,
                                             wants_accommodation)
-                        elif accommodation_option not in ['Y', 'N']:
+                        elif len(person_data) == 4:
 
-                            # Accommodation option should be either Y or N.
+                            # Check if accommodation option is provided.
+                            # Accommodation option is the third index since first
+                            # name and last name are joined to one.
 
-                            return 'Invalid accommodation input.'
+                            accommodation_option = person_data[3]
+                            if accommodation_option == 'Y':
+
+                                # Convert accommodation option to YES for
+                                # consistency.
+
+                                wants_accommodation = 'YES'
+
+                                # Call add_person method.
+
+                                self.add_person(person_name,
+                                                job_description,
+                                                wants_accommodation)
+                            elif accommodation_option == 'N':
+
+                                # Convert accommodation option to NO for
+                                # consistency.
+
+                                wants_accommodation = 'NO'
+
+                                # Call add_person method.
+
+                                self.add_person(person_name,
+                                                job_description,
+                                                wants_accommodation)
+                            elif accommodation_option not in ['Y', 'N']:
+
+                                # Accommodation option should be either Y or N.
+
+                                return 'Invalid accommodation input.'
+                        else:
+                            return 'Invalid number of arguments input.'
                     else:
-                        return 'Invalid number of arguments input.'
-                else:
-                    return 'Invalid job description.'
+                        return 'Invalid job description.'
             return 'People successfully loaded.'
         else:
             return 'Filename must be provided.'
@@ -596,32 +603,36 @@ class Amity(object):
         if filename:
 
             # Define file directory
+            if os.path.isfile('models/' + filename + '.txt') is False:
+                return 'File does not exist.'
+            else:
 
-            with open('models/' + filename + '.txt') as rooms_file:
+                with open('models/' + filename + '.txt') as rooms_file:
 
-                # Read until EOF and return a list containing the lines.
+                    # Read until EOF and return a list containing the lines.
 
-                rooms = rooms_file.readlines()
-            for room in rooms:
+                    rooms = rooms_file.readlines()
+                for room in rooms:
 
-                # Return a list of rooms and split at all whitespaces.
+                    # Return a list of rooms and split at all whitespaces.
 
-                rooms_data = room.split()
+                    rooms_data = room.split()
 
-                # Check if rooms_data length is less than or equal to two.
+                    # Check if rooms_data length is less than or equal to two.
 
-                if len(rooms_data) > 2:
-                    return 'Invalid number of arguments input.'
+                    if len(rooms_data) > 2:
+                        return 'Invalid number of arguments input.'
 
-                # Assign room data and room_type indexes from the split data.
+                    # Assign room data and room_type indexes from the split
+                    # data.
 
-                rooms_name = rooms_data[0]
-                rooms_type = rooms_data[1]
+                    rooms_name = rooms_data[0]
+                    rooms_type = rooms_data[1]
 
-                # Call create_room method.
+                    # Call create_room method.
 
-                self.create_room(rooms_name, rooms_type)
-            return 'Rooms successfully loaded from file.'
+                    self.create_room(rooms_name, rooms_type)
+                return 'Rooms successfully loaded from file.'
         else:
             return 'Filename must be provided.'
 
@@ -835,15 +846,15 @@ class Amity(object):
 
     def print_staff(self):
         """
-        print all fellows
+        print all staff
         """
 
-        puts(colored.blue('ALL FELLOWS:'))
+        puts(colored.blue('ALL STAFF:'))
         puts(colored.blue('-' * 40))
 
         # Print all fellows.
 
-        puts(colored.green('{}'.format(self.fellows)))
+        puts(colored.green('{}'.format(self.staff)))
         return 'Done.'
 
     def print_all_people(self):
@@ -877,3 +888,254 @@ class Amity(object):
                 puts(colored.green(str(people_id) + ':'
                                    + str(people_details)))
             return 'Done.'
+
+    def save_state(self, dbname=''):
+        """
+        save state method
+        """
+
+        # Application starts
+
+        if dbname:
+            name = dbname
+        else:
+            name = 'amity'
+
+        # new session.   no connections are in use.
+
+        DBSession = sessionmaker()
+
+        # an Engine, which the Session will use for connection resources
+
+        engine = create_engine('sqlite:///' + 'databases/' + name
+                               + '.db')
+
+        # Bind the engine to the metadata of the Base class so that the
+        # declaratives can be accessed through a DBSession instance
+        # create a configured "Session" class
+
+        DBSession.configure(bind=engine)
+
+        # instantiate database transactions
+        # A Session() instance establishes all conversations with the database
+        # and represents a "staging zone" for all the objects loaded into the
+        # database session object. Any change made against the objects in the
+        # session won't be persisted into the database until you call
+        # session.commit(). If you're not happy about the changes, you can
+        # revert all of them back to the last commit by calling
+        # session.rollback()
+        # create a Session
+
+        session = DBSession()
+        for room_name in Amity.rooms:
+            room_name = room_name
+
+            # Insert room_names into ROOMS table.
+
+            room_details = AmityRooms(room_name)
+            session.add(room_details)
+        for room_name in Amity.offices:
+            room_name = room_name
+
+            # Insert room_names into OFFICES table.
+
+            room_details = AmityOffices(room_name)
+            session.add(room_details)
+        for room_name in Amity.livingspaces:
+            room_name = room_name
+
+            # Insert room_names into LIVINGSPACES table.
+
+            room_details = AmityLivingspaces(room_name)
+            session.add(room_details)
+        for person_name in Amity.people:
+            person_name = person_name
+
+            # Insert person_names into PEOPLE table.
+
+            person_data = AmityPeople(person_name)
+            session.add(person_data)
+        for person_name in Amity.fellows:
+            fellow_name = person_name
+
+            # Insert person_names into FELLOWS table.
+
+            person_data = AmityFellows(fellow_name)
+            session.add(person_data)
+        for person_name in Amity.staff:
+            staff_name = person_name
+
+            # Insert person_names into STAFF table.
+
+            person_data = AmityStaff(staff_name)
+            session.add(person_data)
+        for fellow_name in Amity.unallocated_livingspace:
+            fellow_name = fellow_name
+
+            # Insert person_names into UNALLOCATEDLIVINGSPACE table.
+
+            person_data = AmityUnallocatedlivingspace(fellow_name)
+            session.add(person_data)
+        for person_name in Amity.unallocated_office:
+            person_name = person_name
+
+            # Insert person_names into UNALLOCATEDOFFICE table.
+
+            person_data = AmityUnallocatedoffice(person_name)
+            session.add(person_data)
+        for room_name in Amity.office_allocations:
+            room_name = room_name
+            person_name = ', '.join(Amity.office_allocations[room_name])
+
+            # Insert room_names and person_names into OFFICEALLOCATIONS table.
+
+            office_allocations = AmityOfficeAllocations(room_name,
+                                                        person_name)
+            session.add(office_allocations)
+        for room_name in Amity.livingspace_allocations:
+            room_name = room_name
+            person_name = \
+                ', '.join(Amity.livingspace_allocations[room_name])
+
+            # Insert room_names and person_names into LIVINGSPACEALLOCATIONS
+            # table.
+
+            livingspace_allocations = \
+                AmityLivingspaceAllocations(room_name, person_name)
+            session.add(livingspace_allocations)
+        for person_id in Amity.person_data:
+            persons_id = person_id
+            person_name = Amity.person_data[person_id][0]
+            job_description = Amity.person_data[person_id][1]
+            wants_accommodation = Amity.person_data[person_id][2]
+
+            # Insert person_id,person_name, job_description,
+            # wants_accommodation into PEOPLEDATA table.
+
+            person_data = AmityPersondata(persons_id, person_name,
+                                          job_description, wants_accommodation)
+            session.add(person_data)
+        for room_name in Amity.room_data:
+            room_name = room_name
+            room_type = Amity.room_data[room_name][0]
+            room_capacity = Amity.room_data[room_name][1]
+
+            # Insert room_name, room_type, room_capacity into ROOMDATA table.
+
+            room_data = AmityRoomdata(room_name, room_type,
+                                      room_capacity)
+            session.add(room_data)
+
+        # commit.
+        # The Transaction
+        # is committed, the Connection object closed
+        # and discarded, the underlying DBAPI connection
+        # returned to the connection pool.
+
+        session.commit()
+        return 'Data saved successfully.'
+
+    def load_state(self, dbname=''):
+        """
+        load data from database method
+        """
+
+        if dbname:
+            name = dbname
+        else:
+            name = 'amity'
+        DBSession = sessionmaker()
+        engine = create_engine('sqlite:///' + 'databases/' + name
+                               + '.db')
+        DBSession.configure(bind=engine)
+        session = DBSession()
+        for room_name in session.execute('SELECT * FROM ROOMS'):
+
+            # Append all acquired data to our rooms list.
+
+            Amity.rooms.append(room_name[0])
+        for room_name in session.execute('SELECT * FROM LIVINGSPACES'):
+
+            # Append all acquired data to our livingspaces list.
+
+            Amity.livingspaces.append(room_name[0])
+        for room_name in session.execute('SELECT * FROM OFFICES'):
+
+            # Append all acquired data to our offices list.
+
+            Amity.offices.append(room_name[0])
+        for person_name in session.execute('SELECT * FROM PEOPLE'):
+
+            # Append all acquired data to our people list.
+
+            Amity.people.append(person_name[0])
+        for person_name in session.execute('SELECT * FROM FELLOWS'):
+
+            # Append all acquired data to our fellows list.
+
+            Amity.fellows.append(person_name[0])
+        for person_name in session.execute('SELECT * FROM STAFF'):
+
+            # Append all acquired data to our staff list.
+
+            Amity.staff.append(person_name[0])
+        for fellow_name in \
+                session.execute('SELECT * FROM UNALLOCATEDLIVINGSPACE'):
+
+            # Append all acquired data to our unallocated_livingspace list.
+
+            Amity.unallocated_livingspace.append(fellow_name[0])
+        for fellow_name in \
+                session.execute('SELECT * FROM UNALLOCATEDOFFICE'):
+
+            # Append all acquired data to our unallocated_office list.
+
+            Amity.unallocated_office.append(fellow_name[0])
+        for room_name in \
+                session.execute('SELECT * FROM OFFICEALLOCATIONS'):
+
+            # Append all acquired data to our office_allocations dict.
+
+            Amity.office_allocations[room_name[0]] = \
+                room_name[1].split(', ')
+        for room_name in \
+                session.execute('SELECT * FROM LIVINGSPACEALLOCATIONS'):
+
+            # Append all acquired data to our livingspace_allocation dict.
+
+            Amity.livingspace_allocations[room_name[0]] = \
+                room_name[1].split(', ')
+        for person_id in session.execute('SELECT * FROM PEOPLEDATA'):
+
+            # Append all acquired data to our person_data dict.
+
+            Amity.person_data[person_id[0]] = [person_id[1],
+                                               person_id[2], person_id[3]]
+        for room_name in session.execute('SELECT * FROM ROOMDATA'):
+
+            # Append all acquired data to our room_data dict.
+
+            Amity.room_data[room_name[0]] = [room_name[0],
+                                             room_name[1], room_name[2]]
+        return 'Data has been loaded into the system successfully.'
+
+    def clear_db(self, dbname=''):
+        """
+        clear entire local database.
+        """
+
+        if dbname:
+            name = dbname
+        else:
+            name = 'amity'
+        DBSession = sessionmaker()
+        engine = create_engine('sqlite:///' + 'databases/' + name
+                               + '.db')
+        DBSession.configure(bind=engine)
+        session = DBSession()
+
+        # Drop all tables then recreate them.
+
+        Base.metadata.drop_all(bind=engine)
+        Base.metadata.create_all(bind=engine)
+        return 'Database cleared successfully.'
