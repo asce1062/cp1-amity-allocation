@@ -5,7 +5,6 @@
 tests for amityville.
 """
 
-import os
 import unittest
 
 from models.amity import Amity
