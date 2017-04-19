@@ -22,7 +22,7 @@ class Amity(object):
     Class Amity
     """
 
-    # List of all rooms. Livingspaces snd Offices.
+    # List of all rooms. Livingspaces and Offices.
 
     rooms = []
 
@@ -1140,7 +1140,6 @@ class Amity(object):
         engine = create_engine('sqlite:///' + 'databases/' + name
                                + '.db')
         DBSession.configure(bind=engine)
-        session = DBSession()
 
         # Drop all tables then recreate them.
 
