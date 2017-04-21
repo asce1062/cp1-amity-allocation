@@ -7,13 +7,17 @@ Class Amity
 import os
 import random
 
-from clint.textui import colored, puts
+from clint.textui import puts, colored
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from models.room import LivingSpace, Office
 from models.person import Fellow, Staff
-from databases.database_models import *
+from databases.database_models import AmityRooms, AmityLivingspaces, \
+    AmityOffices, AmityPeople, AmityFellows, AmityStaff, \
+    AmityUnallocatedlivingspace, AmityUnallocatedoffice, \
+    AmityOfficeAllocations, AmityLivingspaceAllocations, \
+    AmityPersondata, AmityRoomdata, Base
 
 
 class Amity(object):
@@ -147,23 +151,23 @@ class Amity(object):
             return 'Invalid person name.'
         else:
             if job_description.upper() == 'FELLOW':
-
-                # Add fellow by name.
-
-                new_person = Fellow(person_name.upper())
-
-                # Assign an ID for unique identification.
-
-                person_id = 'F{}'.format(len(self.people) + 1)
-
-                # Add the fellow to a list containing all fellows.
-
-                self.fellows.append(person_name.upper())
-
-                # Add the fellow to a list containing all people.
-
-                self.people.append(person_name.upper())
                 if wants_accommodation.upper() in ['YES', 'Y']:
+
+                    # Add fellow by name.
+
+                    new_person = Fellow(person_name.upper())
+
+                    # Assign an ID for unique identification.
+
+                    person_id = 'F{}'.format(len(self.people) + 1)
+
+                    # Add the fellow to a list containing all people.
+
+                    self.people.append(person_name.upper())
+
+                    # Add the fellow to a list containing all fellows.
+
+                    self.fellows.append(person_name.upper())
 
                     # First add the fellow with their details to the person
                     # data dictionary.
@@ -187,7 +191,23 @@ class Amity(object):
                         .format(person_name.upper(), allocated_living_space, allocated_office)
                 elif wants_accommodation.upper() in ['NO', 'N']:
 
-                    # First add the fellow with their details to the person
+                    # Add fellow by name.
+
+                    new_person = Fellow(person_name.upper())
+
+                    # Assign an ID for unique identification.
+
+                    person_id = 'F{}'.format(len(self.people) + 1)
+
+                    # Add the fellow to a list containing all people.
+
+                    self.people.append(person_name.upper())
+
+                    # Add the fellow to a list containing all fellows.
+
+                    self.fellows.append(person_name.upper())
+
+                    # Add the fellow with their details to the person
                     # data dictionary.
 
                     self.person_data[person_id] = \
@@ -204,27 +224,27 @@ class Amity(object):
                 else:
                     return 'Invalid accommodation input.'
             elif job_description.upper() == 'STAFF':
-
-                # Add staff by name.
-
-                new_person = Staff(person_name.upper())
-
-                # Assign an ID for unique identification.
-
-                person_id = 'S{}'.format(len(self.people) + 1)
-
-                # Add the staff to a list containing all staff.
-
-                self.staff.append(person_name.upper())
-
-                # Add the staff to a list containing all people.
-
-                self.people.append(person_name.upper())
                 if wants_accommodation.upper() in ['YES', 'Y']:
                     return 'Staff cannot be allocated a livingspace.'
                 elif wants_accommodation.upper() in ['NO', 'N']:
 
-                    # First add the staff with their details to the person data
+                    # Add staff by name.
+
+                    new_person = Staff(person_name.upper())
+
+                    # Assign an ID for unique identification.
+
+                    person_id = 'S{}'.format(len(self.people) + 1)
+
+                    # Add the staff to a list containing all people.
+
+                    self.people.append(person_name.upper())
+
+                    # Add the staff to a list containing all staff.
+
+                    self.staff.append(person_name.upper())
+
+                    # Add the staff with their details to the person data
                     # dictionary.
 
                     self.person_data[person_id] = \
@@ -502,10 +522,10 @@ class Amity(object):
         if filename:
 
             # Define file directory
-            if os.path.isfile('models/' + filename + '.txt') is False:
+            if os.path.isfile('textfiles/' + filename + '.txt') is False:
                 return 'File does not exist.'
             else:
-                with open('models/' + filename + '.txt') as people_file:
+                with open('textfiles/' + filename + '.txt') as people_file:
 
                     # Read until EOF and return a list containing the lines.
 
@@ -603,11 +623,11 @@ class Amity(object):
         if filename:
 
             # Define file directory
-            if os.path.isfile('models/' + filename + '.txt') is False:
+            if os.path.isfile('textfiles/' + filename + '.txt') is False:
                 return 'File does not exist.'
             else:
 
-                with open('models/' + filename + '.txt') as rooms_file:
+                with open('textfiles/' + filename + '.txt') as rooms_file:
 
                     # Read until EOF and return a list containing the lines.
 
@@ -646,7 +666,7 @@ class Amity(object):
             # Define file directory with the option 'w' to allow writing file
             # permissions.
 
-            file = open('models/' + filename + '.txt', 'w')
+            file = open('textfiles/' + filename + '.txt', 'w')
 
             # Write to file.
 
@@ -705,7 +725,7 @@ class Amity(object):
 
                 # Print out the occupants.
 
-                puts(colored.green(',' .join(livingspace_occupants)))
+                puts(colored.green(', ' .join(livingspace_occupants)))
             puts(colored.blue('\n\nOFFICE ALLOCATIONS\n'))
             for room_name in self.office_allocations:
 
@@ -762,7 +782,7 @@ class Amity(object):
 
                 # Print all occupants of that room.
 
-                puts(colored.green(', '.join(all_allocations[room_name])))
+                puts(colored.green(' '.join(all_allocations[room_name])))
         return 'Done.'
 
     def print_unallocated(self, filename):
@@ -775,7 +795,7 @@ class Amity(object):
             # Define file directory with the option 'w' to allow writing file
             # permissions.
 
-            file = open('models/' + filename + '.txt', 'w')
+            file = open('textfiles/' + filename + '.txt', 'w')
             file.write('UNALLOCATED LIVING SPACES\n')
 
             # Write to file all fellows who have not been allocated any
@@ -989,7 +1009,7 @@ class Amity(object):
             session.add(person_data)
         for room_name in Amity.office_allocations:
             room_name = room_name
-            person_name = ', '.join(Amity.office_allocations[room_name])
+            person_name = ','.join(Amity.office_allocations[room_name])
 
             # Insert room_names and person_names into OFFICEALLOCATIONS table.
 
@@ -999,7 +1019,7 @@ class Amity(object):
         for room_name in Amity.livingspace_allocations:
             room_name = room_name
             person_name = \
-                ', '.join(Amity.livingspace_allocations[room_name])
+                ','.join(Amity.livingspace_allocations[room_name])
 
             # Insert room_names and person_names into LIVINGSPACEALLOCATIONS
             # table.
@@ -1053,78 +1073,86 @@ class Amity(object):
                                + '.db')
         DBSession.configure(bind=engine)
         session = DBSession()
-        for room_name in session.execute('SELECT * FROM ROOMS'):
 
-            # Append all acquired data to our rooms list.
+        rooms = session.query(AmityRooms).all()
 
-            Amity.rooms.append(room_name[0])
-        for room_name in session.execute('SELECT * FROM LIVINGSPACES'):
+        for room in rooms:
+            Amity.rooms.append(room.NAME)
 
-            # Append all acquired data to our livingspaces list.
+        livingspaces = session.query(AmityLivingspaces).all()
 
-            Amity.livingspaces.append(room_name[0])
-        for room_name in session.execute('SELECT * FROM OFFICES'):
+        for livingspace in livingspaces:
+            Amity.livingspaces.append(livingspace.NAME)
 
-            # Append all acquired data to our offices list.
+        offices = session.query(AmityOffices).all()
 
-            Amity.offices.append(room_name[0])
-        for person_name in session.execute('SELECT * FROM PEOPLE'):
+        for office in offices:
+            Amity.offices.append(office.NAME)
 
-            # Append all acquired data to our people list.
+        people = session.query(AmityPeople).all()
 
-            Amity.people.append(person_name[0])
-        for person_name in session.execute('SELECT * FROM FELLOWS'):
+        for person in people:
+            Amity.people.append(person.NAME)
 
-            # Append all acquired data to our fellows list.
+        fellows = session.query(AmityFellows).all()
 
-            Amity.fellows.append(person_name[0])
-        for person_name in session.execute('SELECT * FROM STAFF'):
+        for fellow in fellows:
+            Amity.fellows.append(fellow.NAME)
 
-            # Append all acquired data to our staff list.
+        staff = session.query(AmityStaff).all()
 
-            Amity.staff.append(person_name[0])
-        for fellow_name in \
-                session.execute('SELECT * FROM UNALLOCATEDLIVINGSPACE'):
+        for single_staff in staff:
+            Amity.staff.append(single_staff.NAME)
 
-            # Append all acquired data to our unallocated_livingspace list.
+        livingspace_unallocations = session.query(
+            AmityUnallocatedlivingspace).all()
 
-            Amity.unallocated_livingspace.append(fellow_name[0])
-        for fellow_name in \
-                session.execute('SELECT * FROM UNALLOCATEDOFFICE'):
+        for livingspace_unallocation in livingspace_unallocations:
+            Amity.unallocated_livingspace.append(livingspace_unallocation.NAME)
 
-            # Append all acquired data to our unallocated_office list.
+        office_unallocations = session.query(AmityUnallocatedoffice).all()
 
-            Amity.unallocated_office.append(fellow_name[0])
-        for room_name in \
-                session.execute('SELECT * FROM OFFICEALLOCATIONS'):
+        for office_unallocation in office_unallocations:
+            Amity.unallocated_office.append(
+                office_unallocation.NAME)
 
-            # Append all acquired data to our office_allocations dict.
+        office_allocations = session.query(AmityOfficeAllocations).all()
+        empty_people = []
 
-            Amity.office_allocations[room_name[0]] = \
-                room_name[1].split(', ')
-        for room_name in \
-                session.execute('SELECT * FROM LIVINGSPACEALLOCATIONS'):
+        for office_allocation in office_allocations:
+            office_name = office_allocation.ROOM_NAME
+            allocated_people = office_allocation.PERSON_NAME
+            allocated_people = allocated_people.split(',')
+            Amity.office_allocations[office_name] = allocated_people
 
-            # Append all acquired data to our livingspace_allocation dict.
+        livingspace_allocations = session.query(
+            AmityLivingspaceAllocations).all()
+        empty_people = []
 
-            Amity.livingspace_allocations[room_name[0]] = \
-                room_name[1].split(', ')
-        for person_id in session.execute('SELECT * FROM PEOPLEDATA'):
+        for livingspace_allocation in livingspace_allocations:
+            livingspace_name = livingspace_allocation.ROOM_NAME
+            allocated_people = livingspace_allocation.PERSON_NAME
+            allocated_people = allocated_people.split(',')
+            Amity.livingspace_allocations[livingspace_name] = allocated_people
 
-            # Append all acquired data to our person_data dict.
+        person_data = session.query(AmityPersondata).all()
 
-            Amity.person_data[person_id[0]] = [person_id[1],
-                                               person_id[2], person_id[3]]
-        for room_name in session.execute('SELECT * FROM ROOMDATA'):
+        for single_person in person_data:
+            person_id = single_person.PERSON_ID
+            person_name = single_person.NAME
+            job_description = single_person.JOB_DESCRIPTION
+            wants_accommodation = single_person.WANTS_ACCOMMODATION
+            Amity.person_data[person_id] = [
+                person_name, job_description, wants_accommodation]
 
-            # Append all acquired data to our room_data dict.
+        room_data = session.query(AmityRoomdata).all()
 
-            Amity.room_data[room_name[0]] = [room_name[0],
-                                             room_name[1], room_name[2]]
+        for single_room in room_data:
+            room_name = single_room.NAME
+            room_type = single_room.ROOM_TYPE
+            room_capacity = single_room.ROOM_CAPACITY
+            Amity.room_data[room_name] = [room_type, room_capacity]
 
-        # Clear database to prevent multiple loading of data.
-
-        self.clear_db(name)
         return 'Data has been loaded into the system successfully.'
 
     def clear_db(self, dbname=''):
@@ -1136,6 +1164,11 @@ class Amity(object):
             name = dbname
         else:
             name = 'amity'
+
+        # automap base
+        # The following is what will create the declarative_base base that will be
+        # imported to every table.
+
         DBSession = sessionmaker()
         engine = create_engine('sqlite:///' + 'databases/' + name
                                + '.db')
@@ -1146,3 +1179,57 @@ class Amity(object):
         Base.metadata.drop_all(bind=engine)
         Base.metadata.create_all(bind=engine)
         return 'Database cleared successfully.'
+
+    def delete_person(self, person_id):
+        """
+        delete person method
+        """
+        person_data_list = self.person_data.get(person_id.upper())
+        if person_data_list is None:
+            return '{} does not exist.'.format(person_id.upper())
+        else:
+            person_name = person_data_list[0].upper()
+            person_job_description = person_data_list[1].upper()
+            if person_job_description == 'FELLOW':
+                del self.person_data[person_id]
+                for person in self.people:
+                    if person == person_name:
+                        self.people.remove(person_name)
+                for person in self.fellows:
+                    if person == person_name:
+                        self.fellows.remove(person_name)
+                for unallocatedoffice in self.unallocated_office:
+                    if unallocatedoffice == person_name:
+                        self.unallocated_office.remove(person_name)
+                for unallocatedlivingspace in self.unallocated_livingspace:
+                    if unallocatedlivingspace == person:
+                        self.unallocated_livingspace.remove(person_name)
+                for room in self.livingspace_allocations:
+                    for person in \
+                            self.livingspace_allocations[room]:
+                        if person == person_name:
+                            self.livingspace_allocations[room].remove(
+                                person_name)
+                for roomoffice in self.office_allocations:
+                    for person in self.office_allocations[roomoffice]:
+                        if person == person_name:
+                            self.office_allocations[roomoffice].remove(
+                                person_name)
+                return '{}: {} who is a {} has been removed from amity.' .format(person_id.upper(), person_name.upper(), person_job_description.upper())
+            else:
+                del self.person_data[person_id]
+                for person in self.people:
+                    if person == person_name:
+                        self.people.remove(person_name)
+                for person in self.staff:
+                    if person == person_name:
+                        self.staff.remove(person_name)
+                for unallocatedoffice in self.unallocated_office:
+                    if unallocatedoffice == person_name:
+                        self.unallocated_office.remove(person_name)
+                for roomoffice in self.office_allocations:
+                    for person in self.office_allocations[roomoffice]:
+                        if person == person_name:
+                            self.office_allocations[roomoffice].remove(
+                                person_name)
+                return '{}: {} who is a {} has been removed from amity.' .format(person_id.upper(), person_name.upper(), person_job_description.upper())

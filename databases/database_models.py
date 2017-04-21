@@ -27,7 +27,8 @@ class AmityRooms(Base):
     # Here we define columns for the table ROOMS
     # Notice that each column is also a normal Python instance attribute.
 
-    NAME = Column(Text, primary_key=True)
+    ID = Column(Integer, primary_key=True, autoincrement=True)
+    NAME = Column(Text)
 
     def __init__(self, room_name):
 
@@ -40,7 +41,8 @@ class AmityLivingspaces(Base):
 
     # Here we define columns for the table LIVINGSPACES
 
-    NAME = Column(Text, primary_key=True)
+    ID = Column(Integer, primary_key=True, autoincrement=True)
+    NAME = Column(Text)
 
     def __init__(self, room_name):
 
@@ -53,7 +55,8 @@ class AmityOffices(Base):
 
     # Here we define columns for the table OFFICES
 
-    NAME = Column(Text, primary_key=True)
+    ID = Column(Integer, primary_key=True, autoincrement=True)
+    NAME = Column(Text)
 
     def __init__(self, room_name):
 
@@ -66,7 +69,8 @@ class AmityPeople(Base):
 
     # Here we define columns for the table PEOPLE
 
-    NAME = Column(Text, primary_key=True)
+    ID = Column(Integer, primary_key=True, autoincrement=True)
+    NAME = Column(Text)
 
     def __init__(self, person_name):
 
@@ -79,7 +83,8 @@ class AmityFellows(Base):
 
     # Here we define columns for the table FELLOWS
 
-    NAME = Column(Text, primary_key=True)
+    ID = Column(Integer, primary_key=True, autoincrement=True)
+    NAME = Column(Text)
 
     def __init__(self, fellow_name):
 
@@ -92,7 +97,8 @@ class AmityStaff(Base):
 
     # Here we define columns for the table STAFF
 
-    NAME = Column(Text, primary_key=True)
+    ID = Column(Integer, primary_key=True, autoincrement=True)
+    NAME = Column(Text)
 
     def __init__(self, staff_name):
 
@@ -105,7 +111,8 @@ class AmityUnallocatedlivingspace(Base):
 
     # Here we define columns for the table UNALLOCATEDLIVINGSPACE
 
-    NAME = Column(Text, primary_key=True)
+    ID = Column(Integer, primary_key=True, autoincrement=True)
+    NAME = Column(Text)
 
     def __init__(self, fellow_name):
 
@@ -118,7 +125,8 @@ class AmityUnallocatedoffice(Base):
 
     # Here we define columns for the table UNALLOCATEDOFFICE
 
-    NAME = Column(Text, primary_key=True)
+    ID = Column(Integer, primary_key=True, autoincrement=True)
+    NAME = Column(Text)
 
     def __init__(self, person_name):
 
@@ -131,7 +139,8 @@ class AmityOfficeAllocations(Base):
 
     # Here we define columns for the table UNALLOCATEDOFFICE
 
-    ROOM_NAME = Column(Text, primary_key=True)
+    ID = Column(Integer, primary_key=True, autoincrement=True)
+    ROOM_NAME = Column(Text)
     PERSON_NAME = Column(Text)
 
     def __init__(self, room_name, person_name):
@@ -146,7 +155,8 @@ class AmityLivingspaceAllocations(Base):
 
     # Here we define columns for the table UNALLOCATEDOFFICE
 
-    ROOM_NAME = Column(Text, primary_key=True)
+    ID = Column(Integer, primary_key=True, autoincrement=True)
+    ROOM_NAME = Column(Text)
     PERSON_NAME = Column(Text)
 
     def __init__(self, room_name, person_name):
@@ -162,14 +172,15 @@ class AmityPersondata(Base):
     # Here we define columns for the table PEOPLEDATA
     # Notice that each column is also a normal Python instance attribute.
 
-    ID = Column(Text, primary_key=True)
+    ID = Column(Integer, primary_key=True, autoincrement=True)
+    PERSON_ID = Column(Text)
     NAME = Column(Text)
     JOB_DESCRIPTION = Column(Text)
     WANTS_ACCOMMODATION = Column(Text)
 
     def __init__(self, person_id, person_name, job_description, wants_accommodation):
 
-        self.ID = person_id
+        self.PERSON_ID = person_id
         self.NAME = person_name
         self.JOB_DESCRIPTION = job_description
         self.WANTS_ACCOMMODATION = wants_accommodation
@@ -181,7 +192,8 @@ class AmityRoomdata(Base):
 
     # Here we define columns for the table ROOMDATA
 
-    NAME = Column(Text, primary_key=True)
+    ID = Column(Integer, primary_key=True, autoincrement=True)
+    NAME = Column(Text)
     ROOM_TYPE = Column(Text)
     ROOM_CAPACITY = Column(Integer)
 

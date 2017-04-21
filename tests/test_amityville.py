@@ -50,7 +50,7 @@ class TestAmityville(unittest.TestCase):
 
         self.amityville.create_room('SUN', 'OFFICE')
         result = self.amityville.create_room('SUN', 'OFFICE')
-        self.assertEqual(result, 'SUN already exists.')
+        self.assertEqual(result, 'SUN already exists.', 'red')
 
     def test_create_room_livingspace(self):
         """
