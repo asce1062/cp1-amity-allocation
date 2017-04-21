@@ -92,3 +92,5 @@ ENV/
 .cache/
 cover/
 *.db
+databases/*.db
+

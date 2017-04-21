@@ -50,7 +50,7 @@ class TestAmityville(unittest.TestCase):
 
         self.amityville.create_room('SUN', 'OFFICE')
         result = self.amityville.create_room('SUN', 'OFFICE')
-        self.assertEqual(result, 'SUN already exists.', 'red')
+        self.assertEqual(result, 'SUN already exists.')
 
     def test_create_room_livingspace(self):
         """
@@ -670,3 +670,45 @@ class TestAmityville(unittest.TestCase):
         dbname = ''
         result = self.amityville.clear_db(dbname)
         self.assertEqual(result, 'Database cleared successfully.')
+
+    def test_delete_person_person_id_does_not_exist(self):
+        """
+        test if removing a person who does not exist in the system.
+        """
+        result = self.amityville.delete_person('F1')
+        self.assertEqual(result, 'F1 does not exist.')
+
+    def test_delete_person_fellow(self):
+        """
+        test deleting a fellow from amity
+        """
+        self.amityville.create_room('SUN', 'OFFICE')
+        self.amityville.create_room('MOON', 'LIVINGSPACE')
+        self.amityville.add_person('ALEX', 'FELLOW', 'YES')
+        result = self.amityville.delete_person('F1')
+        self.assertEqual(result, 'F1: ALEX who is a FELLOW has been removed from amity.')
+
+    def test_delete_person_fellow_not_yet_allocated(self):
+        """
+        test deleting a fellow from amity
+        """
+        self.amityville.add_person('ALEX', 'FELLOW', 'YES')
+        result = self.amityville.delete_person('F1')
+        self.assertEqual(result, 'F1: ALEX who is a FELLOW has been removed from amity.')
+
+    def test_delete_person_staff(self):
+        """
+        test deleting a fellow from amity
+        """
+        self.amityville.create_room('SUN', 'OFFICE')
+        self.amityville.add_person('ALEX', 'STAFF', 'NO')
+        result = self.amityville.delete_person('S1')
+        self.assertEqual(result, 'S1: ALEX who is a STAFF has been removed from amity.')
+
+    def test_delete_person_staff_not_yet_allocated(self):
+        """
+        test deleting a fellow from amity
+        """
+        self.amityville.add_person('ALEX', 'STAFF', 'NO')
+        result = self.amityville.delete_person('S1')
+        self.assertEqual(result, 'S1: ALEX who is a STAFF has been removed from amity.')
