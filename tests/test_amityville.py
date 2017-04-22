@@ -690,7 +690,7 @@ class TestAmityville(unittest.TestCase):
 
     def test_delete_person_fellow_not_yet_allocated(self):
         """
-        test deleting a fellow from amity
+        test deleting a fellow from amity who has not yet been allocated
         """
         self.amityville.add_person('ALEX', 'FELLOW', 'YES')
         result = self.amityville.delete_person('F1')
@@ -698,7 +698,7 @@ class TestAmityville(unittest.TestCase):
 
     def test_delete_person_staff(self):
         """
-        test deleting a fellow from amity
+        test deleting a staff from amity
         """
         self.amityville.create_room('SUN', 'OFFICE')
         self.amityville.add_person('ALEX', 'STAFF', 'NO')
@@ -707,8 +707,32 @@ class TestAmityville(unittest.TestCase):
 
     def test_delete_person_staff_not_yet_allocated(self):
         """
-        test deleting a fellow from amity
+        test deleting a staff from amity who has not yet been allocated
         """
         self.amityville.add_person('ALEX', 'STAFF', 'NO')
         result = self.amityville.delete_person('S1')
         self.assertEqual(result, 'S1: ALEX who is a STAFF has been removed from amity.')
+
+    def test_delete_room_non_existant(self):
+        """
+        test deleting a room that is not yet created
+        """
+        result = self.amityville.delete_room('MOON')
+        self.assertEqual(result, 'MOON does not exist.')
+
+    def test_delete_room_livingspace(self):
+        """
+        test deleting a livingspace from amity
+        """
+        self.amityville.create_room('MOON', 'LIVINGSPACE')
+        result = self.amityville.delete_room('MOON')
+        self.assertEqual(result, 'Room MOON which is a LIVINGSPACE has been removed from amity.')
+
+    def test_delete_room_office(self):
+        """
+        test deleting an office from amity
+        """
+        self.amityville.create_room('SUN', 'OFFICE')
+        result = self.amityville.delete_room('SUN')
+        self.assertEqual(result, 'Room SUN which is an OFFICE has been removed from amity.')
+

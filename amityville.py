@@ -23,6 +23,7 @@ Usage:
     my_program load_state [--db=dbname]
     my_program clear_db [--db=dbname]
     my_program delete_person <person_id>
+    my_program delete_room <room_name>
     my_program clear
     my_program quit
     my_program (-i | --interactive)
@@ -325,6 +326,18 @@ class Amityville(cmd.Cmd):
         person_id = arg['<person_id>']
         result = amity.delete_person(person_id.upper())
         if result in [person_id.upper() + ' does not exist.']:
+            color = colored.red
+        else:
+            color = colored.green
+        puts(color(result))
+
+    @docopt_cmd
+    def do_delete_room(self, arg):
+        """ Usage: delete_room <room_name> """
+
+        room_name = arg['<room_name>']
+        result = amity.delete_room(room_name.upper())
+        if result in [room_name.upper() + ' does not exist.']:
             color = colored.red
         else:
             color = colored.green

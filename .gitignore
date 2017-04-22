@@ -91,6 +91,10 @@ ENV/
 .idea/
 .cache/
 cover/
+databases #
+######################
+*.sql
+*.sqlite
 *.db
-databases/*.db
+*.sqlite3
 

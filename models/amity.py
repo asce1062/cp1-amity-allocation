@@ -1184,6 +1184,7 @@ class Amity(object):
         """
         delete person method
         """
+
         person_data_list = self.person_data.get(person_id.upper())
         if person_data_list is None:
             return '{} does not exist.'.format(person_id.upper())
@@ -1201,12 +1202,12 @@ class Amity(object):
                 for unallocatedoffice in self.unallocated_office:
                     if unallocatedoffice == person_name:
                         self.unallocated_office.remove(person_name)
-                for unallocatedlivingspace in self.unallocated_livingspace:
+                for unallocatedlivingspace in \
+                        self.unallocated_livingspace:
                     if unallocatedlivingspace == person:
                         self.unallocated_livingspace.remove(person_name)
                 for room in self.livingspace_allocations:
-                    for person in \
-                            self.livingspace_allocations[room]:
+                    for person in self.livingspace_allocations[room]:
                         if person == person_name:
                             self.livingspace_allocations[room].remove(
                                 person_name)
@@ -1215,7 +1216,8 @@ class Amity(object):
                         if person == person_name:
                             self.office_allocations[roomoffice].remove(
                                 person_name)
-                return '{}: {} who is a {} has been removed from amity.' .format(person_id.upper(), person_name.upper(), person_job_description.upper())
+                return '{}: {} who is a {} has been removed from amity.' \
+                    .format(person_id.upper(), person_name.upper(), person_job_description.upper())
             else:
                 del self.person_data[person_id]
                 for person in self.people:
@@ -1232,4 +1234,45 @@ class Amity(object):
                         if person == person_name:
                             self.office_allocations[roomoffice].remove(
                                 person_name)
-                return '{}: {} who is a {} has been removed from amity.' .format(person_id.upper(), person_name.upper(), person_job_description.upper())
+                return '{}: {} who is a {} has been removed from amity.' \
+                    .format(person_id.upper(), person_name.upper(), person_job_description.upper())
+
+    def delete_room(self, room_name):
+        """
+        delete room method
+        """
+
+        room_data_list = self.room_data.get(room_name.upper())
+        if room_data_list is None:
+
+            # Check if room name entered exists in our room data list.
+
+            return '{} does not exist.'.format(room_name.upper())
+        else:
+
+            # Room type is at index 0 of the room data list.
+
+            room_type = room_data_list[0].upper()
+
+            if room_type == 'LIVINGSPACE':
+                del self.room_data[room_name]
+                del self.livingspace_allocations[room_name]
+                for room in self.rooms:
+                    if room == room_name:
+                        self.rooms.remove(room_name)
+                for livingspaces in self.livingspaces:
+                    if livingspaces == room_name:
+                        self.livingspaces.remove(room_name)
+                return 'Room {} which is a {} has been removed from amity.' \
+                    .format(room_name.upper(), room_type.upper())
+            else:
+                del self.room_data[room_name]
+                del self.office_allocations[room_name]
+                for room in self.rooms:
+                    if room == room_name:
+                        self.rooms.remove(room_name)
+                for office in self.offices:
+                    if office == room_name:
+                        self.offices.remove(room_name)
+                return 'Room {} which is an {} has been removed from amity.'\
+                    .format(room_name.upper(), room_type.upper())
