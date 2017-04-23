@@ -7,17 +7,20 @@ Class Amity
 import os
 import random
 
-from clint.textui import puts, colored
+from clint.textui import colored, puts
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from models.room import LivingSpace, Office
+from databases.database_models import (AmityFellows,
+                                       AmityLivingspaceAllocations,
+                                       AmityLivingspaces,
+                                       AmityOfficeAllocations, AmityOffices,
+                                       AmityPeople, AmityPersondata,
+                                       AmityRoomdata, AmityRooms, AmityStaff,
+                                       AmityUnallocatedlivingspace,
+                                       AmityUnallocatedoffice, Base)
 from models.person import Fellow, Staff
-from databases.database_models import AmityRooms, AmityLivingspaces, \
-    AmityOffices, AmityPeople, AmityFellows, AmityStaff, \
-    AmityUnallocatedlivingspace, AmityUnallocatedoffice, \
-    AmityOfficeAllocations, AmityLivingspaceAllocations, \
-    AmityPersondata, AmityRoomdata, Base
+from models.room import LivingSpace, Office
 
 
 class Amity(object):
