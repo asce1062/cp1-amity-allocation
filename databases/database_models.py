@@ -5,10 +5,9 @@
 http://pythoncentral.io/introductory-tutorial-python-sqlalchemy/
 """
 
-from sqlalchemy import Column, Integer, Text
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import create_engine
 from clint.textui import colored
+from sqlalchemy import Column, Integer, Text, create_engine
+from sqlalchemy.ext.declarative import declarative_base
 
 # automap base
 # The following is what will create the declarative_base base that will be

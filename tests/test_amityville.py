@@ -735,4 +735,3 @@ class TestAmityville(unittest.TestCase):
         self.amityville.create_room('SUN', 'OFFICE')
         result = self.amityville.delete_room('SUN')
         self.assertEqual(result, 'Room SUN which is an OFFICE has been removed from amity.')
-

@@ -49,12 +49,12 @@ import cmd
 import os
 import sys
 
-from docopt import docopt, DocoptExit
-from clint.textui import colored, puts, indent
+from clint.textui import colored, indent, puts
+from docopt import DocoptExit, docopt
 from pyfiglet import Figlet
 
-from models.amity import Amity
 from databases.database_models import create_db
+from models.amity import Amity
 
 amity = Amity()
 
