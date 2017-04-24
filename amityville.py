@@ -94,12 +94,8 @@ def docopt_cmd(func):
 def startup():
     font_property = Figlet(font='poison')
     with indent(84):
-        puts(colored.blue(font_property.renderText('AMITY')))
-        puts(colored.blue(font_property.renderText('VILLE')))
+        puts(colored.blue(font_property.renderText('AMITY VILLE')))
     puts(colored.cyan(__doc__))
-
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 
 class Amityville(cmd.Cmd):
